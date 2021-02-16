@@ -41,7 +41,14 @@ export default (() => {
 				<Override slot="Lightbox" showImageProp={false} offLightboxProp={false}>
 					<Override slot="Icon prev" category="fa" />
 				</Override>
-				<Override slot="Item" showImageProp={false} srcFull="https://images.unsplash.com/photo-1611095565995-d09bbf618f6d?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000" imagesAutoResizeProp />
+				<Override
+					slot="Item"
+					showImageProp={false}
+					srcFull="https://images.unsplash.com/photo-1611095565995-d09bbf618f6d?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000"
+					imagesAutoResizeProp
+					loadingFull="lazy"
+					loadingPreview="lazy"
+				/>
 				<Override slot="Item 3" srcFull="https://images.unsplash.com/photo-1613061588991-6dd130548bc7?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" srcPreview="https://images.unsplash.com/photo-1613077655246-c8c1ab3820d7?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" />
 				<Override slot="Item 0" srcFull="http://placehold.it/800" srcPreview="https://images.unsplash.com/photo-1613053341085-db794820ce43?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" height="512.562px" />
 				<Override slot="Item 1" srcPreview="https://images.unsplash.com/photo-1611095780122-d692cee29291?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000" />
