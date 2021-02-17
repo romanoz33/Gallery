@@ -64,6 +64,7 @@ const Item = ({
 	imagesMinWidthProp,
 	imagesMaxWidthProp,
 	autoFillInProp,
+	loaderFormatProp,
 	...props
 }) => {
 	const {
@@ -87,29 +88,89 @@ const Item = ({
 		setOpen(showImageProp);
 		setIndex(selectdIndex);
 	}, [showImageProp, selectdIndex]);
-	useEffect(() => {
-		loadImage(srcPreview).then(img => {
-			imageRef.current.src = srcPreview; // imageRef.current.style.backgroundImage = 'none'; 
-		});
-	}, [ratioFormatsProp]); // const openGalleryItem = useCallback((e) => {
 
-	const openGalleryItem = e => {
-		loadImage(srcFull).then(img => {
-			setIndex(index);
-			setBigImage(false);
-			setOpen(true);
-			if (scrollStatus) scroll.disable();
-			if (img.width > window.innerWidth) setBigImage(true);
-		});
-		window.addEventListener('keydown', e => {
-			if (e.keyCode === 27) {
-				setOpen(false);
-				setZoom(false);
-				if (scrollStatus) scroll.enable();
+	const checkOnView = sizes => {
+		const visibleSpace = window.innerHeight + window.innerHeight / 2;
+		if (sizes.top + sizes.height < visibleSpace + window.scrollY) return true;
+		return false;
+	};
+
+	const imageLoading = type => {
+		loadImage(srcPreview).then(img => {
+			const sizes = imageRef.current.getBoundingClientRect();
+
+			if (type == 'one') {
+				imageRef.current.src = srcPreview;
+			}
+
+			if (type == 'two') {
+				if (checkOnView(sizes)) {
+					imageRef.current.src = srcPreview;
+					console.log(checkOnView(sizes));
+				}
+			}
+
+			if (type == 'three') {
+				console.log('three');
 			}
 		});
-	}; // }, [isOpen, index, isBigImage, scrollStatus]); 
+	}; // const imageLoading2 = () => {
+	// 	loadImage(srcPreview).then(img => {  
+	// 		const sizes = imageRef.current.getBoundingClientRect();
+	// 			imageRef.current.src = srcPreview;     
+	// 	});   
+	// }; 
 
+
+	useEffect(() => {
+		// if (loaderFormatProp === 'Все сразу') imageLoading('one'); 
+		// if (loaderFormatProp === 'При скроле'){
+		imageLoading('two'); // 	window.addEventListener("load", imageLoading);
+		// 	window.addEventListener("scroll", imageLoading); 
+		// 	window.addEventListener("resize", imageLoading);
+		// } 
+		// console.log(loaderFormatProp) 
+	}, [loaderFormatProp]); // useEffect(() => {   
+	// // window.addEventListener('scroll', function(e) { 
+	// 	loadImage(srcPreview).then(img => {  
+	// 		const sizes = imageRef.current.getBoundingClientRect();
+	// 		if (checkOnView(sizes)) {
+	// 			imageRef.current.src = srcPreview;    
+	// 		} 
+	// 		// imageRef.current.style.backgroundImage = 'none'; 
+	// 	});   
+	// // });
+	// }, [ratioFormatsProp]);  
+	// window.addEventListener("load", dddd);
+	// window.addEventListener("scroll", dddd);
+	// window.addEventListener("resize", dddd);
+	// useEffect(() => {   
+	// 	loadImage(srcPreview).then(img => { 
+	// 	checkOnView(imageRef.current);
+	// 	// console.log(imageRef.current.getBoundingClientRect())
+	// 		imageRef.current.src = srcPreview;   
+	// 		// imageRef.current.style.backgroundImage = 'none'; 
+	// 	});  
+	// }, [ratioFormatsProp]);  
+	// const openGalleryItem = useCallback((e) => {
+	// const openGalleryItem = (e) => {
+	// 	loadImage(srcFull)  
+	// 	.then(img => {
+	// 		setIndex(index);
+	// 		setBigImage(false);
+	// 		setOpen(true);
+	// 		if (scrollStatus) scroll.disable();
+	// 		if (img.width > window.innerWidth) setBigImage(true);
+	// 	}); 
+	// 	window.addEventListener('keydown', (e) => {
+	// 		if (e.keyCode === 27) {
+	// 			setOpen(false);  
+	// 			setZoom(false);
+	// 			if (scrollStatus) scroll.enable();
+	// 		} 
+	// 	});	
+	// }; 
+	// }, [isOpen, index, isBigImage, scrollStatus]); 
 
 	const changeFormat = useCallback((format, sizes) => {
 		const params = {
@@ -156,7 +217,10 @@ const Item = ({
 	useEffect(() => {
 		const sizes = boxRef.current.getBoundingClientRect();
 		changeFormat(ratioFormatsProp, sizes);
-	}, [ratioFormatsProp, columnsCountProp, borderWidthProp, imagesMinWidthProp, imagesMaxWidthProp, autoFillInProp]);
+	}, [ratioFormatsProp, columnsCountProp, borderWidthProp, imagesMinWidthProp, imagesMaxWidthProp, autoFillInProp]); // console.log('devicePixelRatio ' + window.devicePixelRatio)
+	// console.log('deviceXDPI ' + window.screen.deviceXDPI)
+	// console.log('logicalXDPI ' + window.screen.logicalXDPI)
+
 	return <Box
 		ref={boxRef}
 		{...rest}
@@ -173,21 +237,22 @@ const Item = ({
 			max-height='100%'
 			min-width={imagesAutoResizeProp ? '100%' : 'auto'}
 			min-height={imagesAutoResizeProp ? '100%' : 'auto'}
-			object-fit={imagesAutoResizeProp ? 'cover' : objectFitPreview}
-			srcset={srcSetPreview}
-			sizes={sizesPreview}
-			alt={altPreview}
-			title={titlePreview}
-			object-position={objectPositionPreview}
-			loading={loadingPreview}
+			object-fit={imagesAutoResizeProp ? 'cover' : objectFitPreview} // srcset={srcSetPreview}
+			// sizes={sizesPreview}
+			// alt={altPreview} 
+			// title={titlePreview}
+			// object-position={objectPositionPreview}
+			// loading={loadingPreview}
+
 			background-image='url(https://media2.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif?cid=ecf05e47w5icg0kkchsj6di3haw72lfkcuo7s9ge2ctq93r6&rid=giphy.gif)'
 			background-repeat='no-repeat'
 			background-position='center'
 			{...ratioSizes}
 		/>
+		 
 	</Box>;
 }; // <Loader  
-// 	ref={loadRef}
+// 	ref={loadRef} 
 // 	{...override('Loader')}
 // /> 
 

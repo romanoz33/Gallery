@@ -121,6 +121,7 @@ const Gallery = ({
 		imagesMinWidthProp={imagesMinWidthProp}
 		imagesMaxWidthProp={imagesMaxWidthProp}
 		autoFillInProp={autoFillInProp}
+		loaderFormatProp={loaderFormatProp}
 	/>);
 	return <Box {...rest}>
 		      
@@ -222,7 +223,7 @@ const propInfo = {
 		weight: 1
 	},
 	loaderFormatProp: {
-		title: 'Варианты загрузок изображений',
+		title: 'Варианты загрузки изображений',
 		description: {
 			en: 'Как загружать изображения?'
 		},
