@@ -90,38 +90,14 @@ const Item = ({
 		setOpen(showImageProp);
 		setIndex(selectdIndex);
 	}, [showImageProp, selectdIndex]);
-
-	const imageLoading = type => {
-		setSrc(imageRef.current); // loadImage(srcPreview).then(img => {  
-		// 	if (type == 'one') {
-		// 		// imageRef.current.src = srcPreview;     
-		// 	}
-		// 	if (type == 'two') { 
-		// 		// if (checkOnView(sizes)) {
-		// 		// 	imageRef.current.src = srcPreview;  
-		// 		// 	console.log(checkOnView(sizes)) 
-		// 		// }
-		// 	}
-		// 	if (type == 'three') {
-		// 		// console.log('three')			
-		// 	}
-		// });  
-	};
-
 	useEffect(() => {
 		// if (loaderFormatProp === 'Все сразу') setSrc(imageRef.current);
 		// if (loaderFormatProp === 'При скроле') lazyLoader(imageRef.current);
-		lazyLoader(imageRef.current); // if (loaderFormatProp === 'При скроле'){
-		// 	window.addEventListener("load", imageLoading);
-		// 	window.addEventListener("scroll", imageLoading); 
-		// 	window.addEventListener("resize", imageLoading);
-		// } 
-		// console.log(loaderFormatProp) 
+		lazyLoader(imageRef.current);
 	}, []); // }, [loaderFormatProp]); 
 	// useEffect(() => {   
 	// // window.addEventListener('scroll', function(e) { 
 	// 	loadImage(srcPreview).then(img => {  
-	// 		const sizes = imageRef.current.getBoundingClientRect();
 	// 		if (checkOnView(sizes)) {
 	// 			imageRef.current.src = srcPreview;    
 	// 		} 
@@ -129,13 +105,9 @@ const Item = ({
 	// 	});   
 	// // });
 	// }, [ratioFormatsProp]);  
-	// window.addEventListener("load", dddd);
-	// window.addEventListener("scroll", dddd);
-	// window.addEventListener("resize", dddd);
 	// useEffect(() => {   
 	// 	loadImage(srcPreview).then(img => { 
 	// 	checkOnView(imageRef.current);
-	// 	// console.log(imageRef.current.getBoundingClientRect())
 	// 		imageRef.current.src = srcPreview;   
 	// 		// imageRef.current.style.backgroundImage = 'none'; 
 	// 	});  
@@ -205,10 +177,7 @@ const Item = ({
 	useEffect(() => {
 		const sizes = boxRef.current.getBoundingClientRect();
 		changeFormat(ratioFormatsProp, sizes);
-	}, [ratioFormatsProp, columnsCountProp, borderWidthProp, imagesMinWidthProp, imagesMaxWidthProp, autoFillInProp]); // console.log('devicePixelRatio ' + window.devicePixelRatio)
-	// console.log('deviceXDPI ' + window.screen.deviceXDPI)
-	// console.log('logicalXDPI ' + window.screen.logicalXDPI)
-
+	}, [ratioFormatsProp, columnsCountProp, borderWidthProp, imagesMinWidthProp, imagesMaxWidthProp, autoFillInProp]);
 	return <Box
 		ref={boxRef}
 		{...rest}

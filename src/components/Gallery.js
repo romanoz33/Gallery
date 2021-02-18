@@ -49,8 +49,8 @@ const setSrc = img => {
 };
 
 const lazyLoader = img => {
-	window.addEventListener('load', setSrc(img));
 	window.addEventListener('scroll', setSrc(img));
+	window.addEventListener('load', setSrc(img));
 	window.addEventListener('resize', setSrc(img));
 };
 
