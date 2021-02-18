@@ -105,10 +105,10 @@ const Gallery = ({
 		});
 	};
 
-	window.addEventListener('scroll', cheche());
-	useEffect(() => {// window.addEventListener('load',  setSrc(img)); 
+	useEffect(() => {
+		window.addEventListener('scroll', cheche()); // window.addEventListener('load',  setSrc(img)); 
 		// window.addEventListener('resize', setSrc(img)); 
-	}, []);
+	});
 	const picturesParams = [];
 
 	const addPictureParams = (index, data) => {
