@@ -31,47 +31,31 @@ const changeStrInNumber = str => {
 	}
 
 	return `${newStr}`;
-}; // const checkOnView = (sizes, columnCount, index) => {
-//   const visibleSpace = Math.floor(window.innerHeight + (window.innerHeight / 2));
-//   const rowsCount = Math.floor(index / columnCount);
-//   console.log(sizes.top + (sizes.width + (sizes.width * rowsCount)) - window.scrollY)
-//   console.log(visibleSpace + window.scrollY) 
-//   if (sizes.top + (sizes.width + (sizes.width * rowsCount)) < visibleSpace + window.scrollY) return true;
-//   return false;  
-// };  
-// const setSrc = (img, columnCount, index) => { 
+}; // const checkOnView = (sizes) => {
+//   const visibleSpace = window.innerHeight + (window.innerHeight / 2);
+//   console.log(visibleSpace)
+//   if (sizes.top + sizes.height < visibleSpace + window.scrollY) return true;
+//   return false;
+// }; 
+// const setSrc = (img) => {
 //   const sizes = img.getBoundingClientRect();
-//   if(checkOnView(sizes, columnCount, index)) { 
-//     const src = img.getAttribute('data-src');
-//     img.setAttribute('src', src);   
-//     // console.log(checkOnView(sizes, columnCount, index))
-//     // console.log(sizes)   
+//   if(checkOnView(sizes)) { 
+//     // const src = img.getAttribute('data-src');
+//     // img.setAttribute('src', src); 
 //   } 
+//    console.log(checkOnView(sizes))
+//     console.log(sizes)   
 // };
-// const lazyLoader = (img, columnCount, index) => { 
-//   window.addEventListener('scroll', setSrc(img, columnCount, index)); 
-//   window.addEventListener('load', setSrc(img, columnCount, index)); 
-//   window.addEventListener('resize', setSrc(img, columnCount, index)); 
-// }
 
 
-const checkOnView = sizes => {
-	const visibleSpace = window.innerHeight + window.innerHeight / 2;
-	console.log(visibleSpace);
-	if (sizes.top + sizes.height < visibleSpace + window.scrollY) return true;
-	return false;
-};
+const allRef = [];
 
-const setSrc = img => {
-	const sizes = img.getBoundingClientRect();
+const addRef = (index, ref) => {
+	allRef[index] = ref;
+}; // const setSrc2 = (img) => {
+//    console.log(img)
+// };
 
-	if (checkOnView(sizes)) {
-		const src = img.getAttribute('data-src');
-		img.setAttribute('src', src);
-		console.log(checkOnView(sizes));
-		console.log(sizes);
-	}
-};
 
 const lazyLoader = img => {
 	window.addEventListener('scroll', setSrc(img));
@@ -103,6 +87,31 @@ const Gallery = ({
 	useEffect(() => {
 		setScrollStatus(offScrollProp);
 	}, [offScrollProp]);
+
+	const checkOnView = sizes => {
+		const visibleSpace = window.innerHeight + window.innerHeight / 2;
+		console.log(visibleSpace);
+		if (sizes.top + sizes.height < visibleSpace + window.scrollY) return true;
+		return false;
+	};
+
+	const cheche = () => {
+		allRef.forEach(img => {
+			const sizes = img.getBoundingClientRect();
+			console.log(sizes);
+			console.log(checkOnView(sizes));
+
+			if (checkOnView(sizes)) {
+				const src = img.getAttribute('data-src');
+				img.setAttribute('src', src);
+			}
+		});
+	};
+
+	useEffect(() => {
+		window.addEventListener('scroll', cheche()); // window.addEventListener('load',  setSrc(img)); 
+		// window.addEventListener('resize', setSrc(img)); 
+	}, []);
 	const picturesParams = [];
 
 	const addPictureParams = (index, data) => {
@@ -123,7 +132,7 @@ const Gallery = ({
 	//     width: '100%', 
 	//     height: '56.25%'
 	//   }); 
-	// }, [ratioFormatsProp]);  
+	// }, [ratioFormatsProp]);   
 	// Условие, чтобы количество Item было не меньше 0.
 	// Иначе получаем ошибку при переборе массива
 
@@ -160,7 +169,7 @@ const Gallery = ({
 		autoFillInProp={autoFillInProp}
 		loaderFormatProp={loaderFormatProp}
 		galleryItemCountProp={galleryItemCountProp}
-		setSrc={setSrc}
+		addRef={addRef}
 		lazyLoader={lazyLoader}
 	/>);
 	return <Box {...rest}>

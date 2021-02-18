@@ -66,7 +66,7 @@ const Item = ({
 	autoFillInProp,
 	loaderFormatProp,
 	galleryItemCountProp,
-	setSrc,
+	addRef,
 	lazyLoader,
 	...props
 }) => {
@@ -90,7 +90,10 @@ const Item = ({
 	useEffect(() => {
 		setOpen(showImageProp);
 		setIndex(selectdIndex);
-	}, [showImageProp, selectdIndex]); // }, [loaderFormatProp]); 
+	}, [showImageProp, selectdIndex]);
+	useEffect(() => {
+		addRef(index, imageRef.current);
+	}, []); // }, [loaderFormatProp]); 
 	// useEffect(() => {   
 	// // window.addEventListener('scroll', function(e) { 
 	// 	loadImage(srcPreview).then(img => {  
@@ -163,9 +166,9 @@ const Item = ({
 				params.height = 16 * params.width / 9;
 				break;
 
-			default:
-				params.height = 'auto';
-				params.width = 'auto';
+			default: // params.height = 'auto'; 
+			// params.width = 'auto'; 
+
 		}
 
 		setRatioSizes(params);
@@ -181,17 +184,17 @@ const Item = ({
 	// 	})
 	// }, []); 
 
-	useEffect(() => {
-		// if (loaderFormatProp === 'Все сразу') setSrc(imageRef.current);
+	useEffect(() => {// if (loaderFormatProp === 'Все сразу') setSrc(imageRef.current);
 		// if (loaderFormatProp === 'При скроле') lazyLoader(imageRef.current);
 		// loadImage(srcPreview).then(img => {  
 		// 		// imageRef.current.src = srcPreview;    
 		// });  
 		// console.log(columnsCountProp, galleryItemCountProp)
 		// lazyLoader(imageRef.current, columnsCountProp, index);
-		lazyLoader(imageRef.current); // console.log(imageRef.current.getBoundingClientRect())
+		// lazyLoader(imageRef.current);
+		// console.log(imageRef.current.getBoundingClientRect())
 		// console.log(imageRef.current.clientHeight )
-		// console.log(imageRef.current) 
+		// console.log(imageRef) 
 	}, []);
 	return <Box
 		ref={boxRef}
@@ -200,17 +203,14 @@ const Item = ({
 		min-height='auto'
 		grid-column={`span ${columsCountProp}`}
 		grid-row={`span ${rowsCountProp}`}
-		position='relative' // height='auto'
-
+		position='relative'
+		height='auto'
 	>
 		 
 		<Image
 			ref={imageRef}
 			onClick={e => openGalleryItem(e)}
-			width='300'
-			height='300' // 	width={`${columnsCountProp * 250}px`}
-			// width={`${columnsCountProp * 250}px`}
-
+			height='500px'
 			max-width='100%'
 			max-height='100%'
 			display='block'
@@ -226,8 +226,8 @@ const Item = ({
 			data-src={srcPreview}
 			background-image='url(https://media2.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif?cid=ecf05e47w5icg0kkchsj6di3haw72lfkcuo7s9ge2ctq93r6&rid=giphy.gif)'
 			background-repeat='no-repeat'
-			background-position='center'
-			{...ratioSizes}
+			background-position='center' // {...ratioSizes} 
+
 		/>
 		 
 	</Box>;
