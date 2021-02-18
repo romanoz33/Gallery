@@ -62,21 +62,20 @@ const lazyLoader = img => {
 
 const checkOnView = sizes => {
 	const visibleSpace = window.innerHeight + window.innerHeight / 2;
-	console.log(visibleSpace);
 	if (sizes.top + sizes.height < visibleSpace + window.scrollY) return true;
 	return false;
 };
 
 const cheche = () => {
-	// console.log('dd');
 	allRef.forEach(img => {
-		const sizes = img.getBoundingClientRect();
-		console.log(sizes);
-		console.log(checkOnView(sizes));
+		// console.log(!img.getAttribute('src'));
+		if (!img.getAttribute('src')) {
+			const sizes = img.getBoundingClientRect();
 
-		if (checkOnView(sizes)) {
-			const src = img.getAttribute('data-src');
-			img.setAttribute('src', src);
+			if (checkOnView(sizes)) {
+				const src = img.getAttribute('data-src');
+				img.setAttribute('src', src);
+			}
 		}
 	});
 };
@@ -106,12 +105,10 @@ const Gallery = ({
 		setScrollStatus(offScrollProp);
 	}, [offScrollProp]);
 	useEffect(() => {
-		// window.addEventListener('scroll', function(){
-		//   console.log('dddd')
-		// }); 
-		window.addEventListener('scroll', cheche); // window.addEventListener('load',  setSrc(img)); 
-		// window.addEventListener('resize', setSrc(img)); 
-	});
+		window.addEventListener('scroll', cheche);
+		window.addEventListener('load', cheche);
+		window.addEventListener('resize', cheche);
+	}, []);
 	const picturesParams = [];
 
 	const addPictureParams = (index, data) => {
