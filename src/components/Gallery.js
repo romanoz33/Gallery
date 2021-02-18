@@ -67,14 +67,17 @@ const checkOnView = sizes => {
 
 const cheche = () => {
 	allRef.forEach(img => {
-		// if(!img.getAttribute('src')) { 
-		const sizes = img.getBoundingClientRect();
+		console.log('1');
 
-		if (checkOnView(sizes)) {
-			const src = img.getAttribute('data-src');
-			img.setAttribute('src', src);
-		} // }
+		if (!img.getAttribute('src')) {
+			const sizes = img.getBoundingClientRect();
 
+			if (checkOnView(sizes)) {
+				console.log('2');
+				const src = img.getAttribute('data-src');
+				img.setAttribute('src', src);
+			}
+		}
 	});
 };
 
@@ -101,12 +104,12 @@ const Gallery = ({
 	const [ratioSizes, setRatioSizes] = useState({});
 	useEffect(() => {
 		setScrollStatus(offScrollProp);
-	}, [offScrollProp]); // useEffect(() => {  
-
-	window.addEventListener('scroll', cheche); // window.addEventListener('load',  cheche);  
-	// window.addEventListener('resize', cheche); 
-	// }, []);   
-
+	}, [offScrollProp]);
+	useEffect(() => {
+		window.addEventListener('load', cheche);
+		window.addEventListener('scroll', cheche);
+		window.addEventListener('resize', cheche);
+	}, []);
 	const picturesParams = [];
 
 	const addPictureParams = (index, data) => {
