@@ -65,6 +65,8 @@ const Item = ({
 	imagesMaxWidthProp,
 	autoFillInProp,
 	loaderFormatProp,
+	setSrc,
+	lazyLoader,
 	...props
 }) => {
 	const {
@@ -89,48 +91,34 @@ const Item = ({
 		setIndex(selectdIndex);
 	}, [showImageProp, selectdIndex]);
 
-	const checkOnView = sizes => {
-		const visibleSpace = window.innerHeight + window.innerHeight / 2;
-		if (sizes.top + sizes.height < visibleSpace + window.scrollY) return true;
-		return false;
+	const imageLoading = type => {
+		setSrc(imageRef.current); // loadImage(srcPreview).then(img => {  
+		// 	if (type == 'one') {
+		// 		// imageRef.current.src = srcPreview;     
+		// 	}
+		// 	if (type == 'two') { 
+		// 		// if (checkOnView(sizes)) {
+		// 		// 	imageRef.current.src = srcPreview;  
+		// 		// 	console.log(checkOnView(sizes)) 
+		// 		// }
+		// 	}
+		// 	if (type == 'three') {
+		// 		// console.log('three')			
+		// 	}
+		// });  
 	};
 
-	const imageLoading = type => {
-		loadImage(srcPreview).then(img => {
-			const sizes = imageRef.current.getBoundingClientRect();
-
-			if (type == 'one') {
-				imageRef.current.src = srcPreview;
-			}
-
-			if (type == 'two') {
-				if (checkOnView(sizes)) {
-					imageRef.current.src = srcPreview;
-					console.log(checkOnView(sizes));
-				}
-			}
-
-			if (type == 'three') {
-				console.log('three');
-			}
-		});
-	}; // const imageLoading2 = () => {
-	// 	loadImage(srcPreview).then(img => {  
-	// 		const sizes = imageRef.current.getBoundingClientRect();
-	// 			imageRef.current.src = srcPreview;     
-	// 	});   
-	// }; 
-
-
 	useEffect(() => {
-		// if (loaderFormatProp === 'Все сразу') imageLoading('one'); 
-		// if (loaderFormatProp === 'При скроле'){
-		imageLoading('two'); // 	window.addEventListener("load", imageLoading);
+		// if (loaderFormatProp === 'Все сразу') setSrc(imageRef.current);
+		// if (loaderFormatProp === 'При скроле') lazyLoader(imageRef.current);
+		lazyLoader(imageRef.current); // if (loaderFormatProp === 'При скроле'){
+		// 	window.addEventListener("load", imageLoading);
 		// 	window.addEventListener("scroll", imageLoading); 
 		// 	window.addEventListener("resize", imageLoading);
 		// } 
 		// console.log(loaderFormatProp) 
-	}, [loaderFormatProp]); // useEffect(() => {   
+	}, []); // }, [loaderFormatProp]); 
+	// useEffect(() => {   
 	// // window.addEventListener('scroll', function(e) { 
 	// 	loadImage(srcPreview).then(img => {  
 	// 		const sizes = imageRef.current.getBoundingClientRect();
@@ -244,6 +232,7 @@ const Item = ({
 			// object-position={objectPositionPreview}
 			// loading={loadingPreview}
 
+			data-src={srcPreview}
 			background-image='url(https://media2.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif?cid=ecf05e47w5icg0kkchsj6di3haw72lfkcuo7s9ge2ctq93r6&rid=giphy.gif)'
 			background-repeat='no-repeat'
 			background-position='center'

@@ -31,16 +31,28 @@ const changeStrInNumber = str => {
 	}
 
 	return `${newStr}`;
-}; // const calculateAspectRatioFit = (
-//     srcWidth, 
-//     srcHeight, 
-//     maxWidth, 
-//     maxHeight
-//   ) => {
-//     const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
-//     return { width: srcWidth*ratio, height: srcHeight*ratio };
-//  }
+};
 
+const checkOnView = sizes => {
+	const visibleSpace = window.innerHeight + window.innerHeight / 2;
+	if (sizes.top + sizes.height < visibleSpace + window.scrollY) return true;
+	return false;
+};
+
+const setSrc = img => {
+	const sizes = img.getBoundingClientRect();
+
+	if (checkOnView(sizes)) {
+		const src = img.getAttribute('data-src');
+		img.setAttribute('src', src);
+	}
+};
+
+const lazyLoader = img => {
+	window.addEventListener('load', setSrc(img));
+	window.addEventListener('scroll', setSrc(img));
+	window.addEventListener('resize', setSrc(img));
+};
 
 const Gallery = ({
 	galleryItemCountProp,
@@ -122,6 +134,8 @@ const Gallery = ({
 		imagesMaxWidthProp={imagesMaxWidthProp}
 		autoFillInProp={autoFillInProp}
 		loaderFormatProp={loaderFormatProp}
+		setSrc={setSrc}
+		lazyLoader={lazyLoader}
 	/>);
 	return <Box {...rest}>
 		      
