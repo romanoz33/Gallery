@@ -52,10 +52,7 @@ const allRef = [];
 
 const addRef = (index, ref) => {
 	allRef[index] = ref;
-}; // const setSrc2 = (img) => {
-//    console.log(img)
-// };
-
+};
 
 const lazyLoader = img => {
 	window.addEventListener('scroll', setSrc(img));
@@ -108,8 +105,8 @@ const Gallery = ({
 		});
 	};
 
-	useEffect(() => {
-		window.addEventListener('scroll', cheche()); // window.addEventListener('load',  setSrc(img)); 
+	window.addEventListener('scroll', cheche());
+	useEffect(() => {// window.addEventListener('load',  setSrc(img)); 
 		// window.addEventListener('resize', setSrc(img)); 
 	}, []);
 	const picturesParams = [];
