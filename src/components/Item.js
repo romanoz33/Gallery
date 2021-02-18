@@ -67,7 +67,6 @@ const Item = ({
 	loaderFormatProp,
 	galleryItemCountProp,
 	addRef,
-	lazyLoader,
 	...props
 }) => {
 	const {

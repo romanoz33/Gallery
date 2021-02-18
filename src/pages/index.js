@@ -35,7 +35,6 @@ export default (() => {
 				loaderFormatProp="Все сразу"
 				galleryItemCountProp="16"
 				ratioFormatsProp="auto"
-				columnsCountProp="2"
 			>
 				<Override slot="Item 2" srcPreview="https://images.unsplash.com/photo-1611095564985-89765398121e?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000" srcFull="https://images.unsplash.com/photo-1613000308053-179042bbef9e?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" showImageProp />
 				<Override slot="Lightbox" showImageProp={false} offLightboxProp={false}>
