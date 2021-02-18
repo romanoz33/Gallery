@@ -65,6 +65,7 @@ const Item = ({
 	imagesMaxWidthProp,
 	autoFillInProp,
 	loaderFormatProp,
+	galleryItemCountProp,
 	setSrc,
 	lazyLoader,
 	...props
@@ -89,12 +90,7 @@ const Item = ({
 	useEffect(() => {
 		setOpen(showImageProp);
 		setIndex(selectdIndex);
-	}, [showImageProp, selectdIndex]);
-	useEffect(() => {
-		// if (loaderFormatProp === 'Все сразу') setSrc(imageRef.current);
-		// if (loaderFormatProp === 'При скроле') lazyLoader(imageRef.current);
-		lazyLoader(imageRef.current);
-	}, []); // }, [loaderFormatProp]); 
+	}, [showImageProp, selectdIndex]); // }, [loaderFormatProp]); 
 	// useEffect(() => {   
 	// // window.addEventListener('scroll', function(e) { 
 	// 	loadImage(srcPreview).then(img => {  
@@ -177,21 +173,47 @@ const Item = ({
 	useEffect(() => {
 		const sizes = boxRef.current.getBoundingClientRect();
 		changeFormat(ratioFormatsProp, sizes);
-	}, [ratioFormatsProp, columnsCountProp, borderWidthProp, imagesMinWidthProp, imagesMaxWidthProp, autoFillInProp]);
+	}, [ratioFormatsProp, columnsCountProp, borderWidthProp, imagesMinWidthProp, imagesMaxWidthProp, autoFillInProp]); // useEffect(() => { 
+	// 	const sizes = boxRef.current.getBoundingClientRect();
+	// 	setRatioSizes({
+	// 		height: sizes.width,
+	// 		width: sizes.width,
+	// 	})
+	// }, []); 
+
+	useEffect(() => {
+		// if (loaderFormatProp === 'Все сразу') setSrc(imageRef.current);
+		// if (loaderFormatProp === 'При скроле') lazyLoader(imageRef.current);
+		// loadImage(srcPreview).then(img => {  
+		// 		// imageRef.current.src = srcPreview;    
+		// });  
+		// console.log(columnsCountProp, galleryItemCountProp)
+		// lazyLoader(imageRef.current, columnsCountProp, index);
+		lazyLoader(imageRef.current); // console.log(imageRef.current.getBoundingClientRect())
+		// console.log(imageRef.current.clientHeight )
+		// console.log(imageRef.current) 
+	}, []);
 	return <Box
 		ref={boxRef}
 		{...rest}
+		min-width='auto'
+		min-height='auto'
 		grid-column={`span ${columsCountProp}`}
 		grid-row={`span ${rowsCountProp}`}
-		position='relative'
-		height='auto'
+		position='relative' // height='auto'
+
 	>
 		 
 		<Image
 			ref={imageRef}
 			onClick={e => openGalleryItem(e)}
+			width='300'
+			height='300' // 	width={`${columnsCountProp * 250}px`}
+			// width={`${columnsCountProp * 250}px`}
+
 			max-width='100%'
 			max-height='100%'
+			display='block'
 			min-width={imagesAutoResizeProp ? '100%' : 'auto'}
 			min-height={imagesAutoResizeProp ? '100%' : 'auto'}
 			object-fit={imagesAutoResizeProp ? 'cover' : objectFitPreview} // srcset={srcSetPreview}

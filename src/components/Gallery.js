@@ -31,10 +31,33 @@ const changeStrInNumber = str => {
 	}
 
 	return `${newStr}`;
-};
+}; // const checkOnView = (sizes, columnCount, index) => {
+//   const visibleSpace = Math.floor(window.innerHeight + (window.innerHeight / 2));
+//   const rowsCount = Math.floor(index / columnCount);
+//   console.log(sizes.top + (sizes.width + (sizes.width * rowsCount)) - window.scrollY)
+//   console.log(visibleSpace + window.scrollY) 
+//   if (sizes.top + (sizes.width + (sizes.width * rowsCount)) < visibleSpace + window.scrollY) return true;
+//   return false;  
+// };  
+// const setSrc = (img, columnCount, index) => { 
+//   const sizes = img.getBoundingClientRect();
+//   if(checkOnView(sizes, columnCount, index)) { 
+//     const src = img.getAttribute('data-src');
+//     img.setAttribute('src', src);   
+//     // console.log(checkOnView(sizes, columnCount, index))
+//     // console.log(sizes)   
+//   } 
+// };
+// const lazyLoader = (img, columnCount, index) => { 
+//   window.addEventListener('scroll', setSrc(img, columnCount, index)); 
+//   window.addEventListener('load', setSrc(img, columnCount, index)); 
+//   window.addEventListener('resize', setSrc(img, columnCount, index)); 
+// }
+
 
 const checkOnView = sizes => {
 	const visibleSpace = window.innerHeight + window.innerHeight / 2;
+	console.log(visibleSpace);
 	if (sizes.top + sizes.height < visibleSpace + window.scrollY) return true;
 	return false;
 };
@@ -45,6 +68,8 @@ const setSrc = img => {
 	if (checkOnView(sizes)) {
 		const src = img.getAttribute('data-src');
 		img.setAttribute('src', src);
+		console.log(checkOnView(sizes));
+		console.log(sizes);
 	}
 };
 
@@ -134,6 +159,7 @@ const Gallery = ({
 		imagesMaxWidthProp={imagesMaxWidthProp}
 		autoFillInProp={autoFillInProp}
 		loaderFormatProp={loaderFormatProp}
+		galleryItemCountProp={galleryItemCountProp}
 		setSrc={setSrc}
 		lazyLoader={lazyLoader}
 	/>);
