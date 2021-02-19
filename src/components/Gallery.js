@@ -67,16 +67,15 @@ const checkOnView = sizes => {
 
 const cheche = () => {
 	allRef.forEach(img => {
-		if (!img.getAttribute('src')) {
-			const sizes = img.getBoundingClientRect();
+		// if(!img.getAttribute('src')) { 
+		const sizes = img.getBoundingClientRect();
 
-			if (checkOnView(sizes)) {
-				// console.log(img.height)
-				const src = img.getAttribute('data-src');
-				img.setAttribute('src', src);
-				img.height = 'auto';
-			}
-		}
+		if (checkOnView(sizes)) {
+			// console.log(img.height)
+			const src = img.getAttribute('data-src');
+			img.setAttribute('src', src); // img.height = 'auto'
+		} // }
+
 	});
 };
 
