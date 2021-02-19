@@ -209,7 +209,7 @@ const Item = ({
 		<Image
 			ref={imageRef}
 			onClick={e => openGalleryItem(e)}
-			height='500px'
+			height='auto'
 			max-width='100%'
 			max-height='100%'
 			display='block'
