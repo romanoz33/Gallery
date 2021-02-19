@@ -103,10 +103,9 @@ const Gallery = ({
 	useEffect(() => {
 		setScrollStatus(offScrollProp);
 	}, [offScrollProp]);
-	useEffect(() => {
-		cheche();
-		window.addEventListener('scroll', cheche);
-		window.addEventListener('resize', cheche);
+	useEffect(() => {// cheche();  
+		// window.addEventListener('scroll', cheche); 
+		// window.addEventListener('resize', cheche); 
 	}, []);
 	const picturesParams = [];
 
