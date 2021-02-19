@@ -74,7 +74,8 @@ const Item = ({
 		rest
 	} = useOverrides(props, overrides);
 	const imageRef = useRef();
-	const boxRef = useRef(); // Функция для записи всех картинок в объект
+	const boxRef = useRef();
+	const loadRef = useRef(); // Функция для записи всех картинок в объект
 
 	addPictureParams(index, {
 		srcFull,
@@ -93,17 +94,14 @@ const Item = ({
 	useEffect(() => {
 		addRef(index, imageRef.current);
 	}, []); // }, [loaderFormatProp]); 
-	// useEffect(() => {   
-	// // window.addEventListener('scroll', function(e) { 
-	// 	loadImage(srcPreview).then(img => {  
-	// 		if (checkOnView(sizes)) {
-	// 			imageRef.current.src = srcPreview;    
-	// 		} 
-	// 		// imageRef.current.style.backgroundImage = 'none'; 
-	// 	});   
-	// // });
-	// }, [ratioFormatsProp]);  
-	// useEffect(() => {   
+
+	useEffect(() => {
+		// window.addEventListener('scroll', function(e) { 
+		loadImage(srcPreview).then(img => {
+			// if (checkOnView(sizes)) {
+			imageRef.current.src = srcPreview; // } 
+		}); // });
+	}, []); // useEffect(() => {   
 	// 	loadImage(srcPreview).then(img => { 
 	// 	checkOnView(imageRef.current);
 	// 		imageRef.current.src = srcPreview;   
@@ -206,6 +204,8 @@ const Item = ({
 		height='auto'
 	>
 		 
+		<Loader ref={loadRef} {...override('Loader')} />
+		 
 		<Image
 			ref={imageRef}
 			onClick={e => openGalleryItem(e)}
@@ -219,25 +219,19 @@ const Item = ({
 			// alt={altPreview} 
 			// title={titlePreview}
 			// object-position={objectPositionPreview}
-
-			loading={loadingPreview}
-			src={srcPreview}
-			width="600"
-			height="600" // src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAGQCAYAAAAUdV17AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAHmSURBVHgB7cCBAAAAAICg/akXqQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAaVPkAAR4KkGUAAAAASUVORK5CYII='
+			// loading={loadingPreview} 
+			// src={srcPreview}
+			// src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAGQCAYAAAAUdV17AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAHmSURBVHgB7cCBAAAAAICg/akXqQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAaVPkAAR4KkGUAAAAASUVORK5CYII='
 			// data-src={srcPreview}
+			// background-image='url(https://media2.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif?cid=ecf05e47w5icg0kkchsj6di3haw72lfkcuo7s9ge2ctq93r6&rid=giphy.gif)'
+			// background-repeat='no-repeat'
+			// background-position='center'
 
-			background-image='url(https://media2.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif?cid=ecf05e47w5icg0kkchsj6di3haw72lfkcuo7s9ge2ctq93r6&rid=giphy.gif)'
-			background-repeat='no-repeat'
-			background-position='center' // {...ratioSizes}  
-
+			{...ratioSizes}
 		/>
 		 
 	</Box>;
-}; // <Loader  
-// 	ref={loadRef} 
-// 	{...override('Loader')}
-// /> 
-
+};
 
 const propInfo = {
 	columsCountProp: {

@@ -34,8 +34,7 @@ export default (() => {
 				autoFillInProp
 				loaderFormatProp="Все сразу"
 				galleryItemCountProp="16"
-				columnsCountProp="2"
-				ratioFormatsProp="3:2"
+				ratioFormatsProp="1:1"
 			>
 				<Override slot="Item 2" srcPreview="https://images.unsplash.com/photo-1611095564985-89765398121e?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000" srcFull="https://images.unsplash.com/photo-1613000308053-179042bbef9e?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" showImageProp />
 				<Override slot="Lightbox" showImageProp={false} offLightboxProp={false}>
@@ -46,7 +45,7 @@ export default (() => {
 					showImageProp={false}
 					srcFull="https://images.unsplash.com/photo-1613565101545-63d41fa3571b?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000"
 					imagesAutoResizeProp
-					loadingPreview="lazy"
+					loadingPreview="eager"
 				/>
 				<Override slot="Item 3" srcFull="https://images.unsplash.com/photo-1613061588991-6dd130548bc7?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" srcPreview="https://images.unsplash.com/photo-1613077655246-c8c1ab3820d7?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" />
 				<Override slot="Item 0" srcFull="http://placehold.it/800" srcPreview="https://images.unsplash.com/photo-1613053341085-db794820ce43?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" />
