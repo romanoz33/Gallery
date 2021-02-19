@@ -67,15 +67,14 @@ const checkOnView = sizes => {
 
 const cheche = () => {
 	allRef.forEach(img => {
-		console.log('1');
-
 		if (!img.getAttribute('src')) {
 			const sizes = img.getBoundingClientRect();
 
 			if (checkOnView(sizes)) {
-				console.log('2');
+				// console.log(img.height)
 				const src = img.getAttribute('data-src');
 				img.setAttribute('src', src);
+				img.height = 'auto';
 			}
 		}
 	});
@@ -106,7 +105,7 @@ const Gallery = ({
 		setScrollStatus(offScrollProp);
 	}, [offScrollProp]);
 	useEffect(() => {
-		window.addEventListener('load', cheche);
+		cheche();
 		window.addEventListener('scroll', cheche);
 		window.addEventListener('resize', cheche);
 	}, []);
