@@ -165,9 +165,9 @@ const Item = ({
 				params.height = 16 * params.width / 9;
 				break;
 
-			default: // params.height = 'auto'; 
-			// params.width = 'auto'; 
-
+			default:
+				params.height = 'auto';
+				params.width = 'auto';
 		}
 
 		setRatioSizes(params);
@@ -208,8 +208,7 @@ const Item = ({
 		 
 		<Image
 			ref={imageRef}
-			onClick={e => openGalleryItem(e)} // height='auto'
-
+			onClick={e => openGalleryItem(e)}
 			max-width='100%'
 			max-height='100%'
 			display='block'
@@ -220,14 +219,14 @@ const Item = ({
 			// alt={altPreview} 
 			// title={titlePreview}
 			// object-position={objectPositionPreview}
-			// loading={loadingPreview}
+			// loading={loadingPreview} 
 
 			src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAGQCAYAAAAUdV17AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAHmSURBVHgB7cCBAAAAAICg/akXqQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAaVPkAAR4KkGUAAAAASUVORK5CYII='
 			data-src={srcPreview}
 			background-image='url(https://media2.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif?cid=ecf05e47w5icg0kkchsj6di3haw72lfkcuo7s9ge2ctq93r6&rid=giphy.gif)'
 			background-repeat='no-repeat'
-			background-position='center' // {...ratioSizes} 
-
+			background-position='center'
+			{...ratioSizes}
 		/>
 		 
 	</Box>;
