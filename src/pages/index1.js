@@ -7,7 +7,7 @@ import { Override, Section } from "@quarkly/components";
 import * as Components from "components";
 export default (() => {
 	return <Theme theme={theme}>
-		<GlobalQuarklyPageStyles pageUrl={"index"} />
+		<GlobalQuarklyPageStyles pageUrl={"index1"} />
 		<Helmet>
 			<title>
 				Quarkly export
@@ -32,10 +32,14 @@ export default (() => {
 			<Components.Gallery
 				offScrollProp
 				autoFillInProp
-				loaderFormatProp="Все сразу"
+				loaderFormatProp="При скроле"
 				galleryItemCountProp="16"
-				ratioFormatsProp="1:1"
-				columnsCountProp="2"
+				ratioFormatsProp="9:16"
+				imagesMaxWidthProp="2fr"
+				imagesMinWidthProp="84"
+				mdColumnsCountProp="2"
+				smColumnsCountProp="5"
+				lgColumnsCountProp="6"
 			>
 				<Override slot="Item 2" srcPreview="https://images.unsplash.com/photo-1611095564985-89765398121e?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000" srcFull="https://images.unsplash.com/photo-1613000308053-179042bbef9e?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" showImageProp />
 				<Override slot="Lightbox" showImageProp={false} offLightboxProp={false}>

@@ -107,7 +107,8 @@ const Lightbox = ({
 	}, [isOpen]);
 	const closeLightbox = useCallback(() => {
 		setOpen(false);
-		setZoom(false); // if (scrollStatus) scroll.enable();
+		setZoom(false);
+		if (scrollStatus) scroll.enable();
 	}, [scrollStatus, isOpen]);
 	const zoomImage = useCallback(e => {
 		stopEventClick(e);

@@ -6,7 +6,8 @@ export default {
 			"name": "root",
 			"children": [
 				"6023d665bfd603001f71ced2",
-				"6023d665bfd603001f71ced4"
+				"6023d665bfd603001f71ced4",
+				"602fca23877fae002289e51d"
 			]
 		},
 		"6023d665bfd603001f71ced2": {
@@ -18,6 +19,11 @@ export default {
 			"id": "6023d665bfd603001f71ced4",
 			"name": "index",
 			"pageUrl": "index"
+		},
+		"602fca23877fae002289e51d": {
+			"id": "602fca23877fae002289e51d",
+			"pageUrl": "index1",
+			"name": "test"
 		}
 	},
 	"mode": "production",

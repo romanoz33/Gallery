@@ -100,6 +100,9 @@ const Gallery = ({
 	const [isZoom, setZoom] = useState(false);
 	const [scrollStatus, setScrollStatus] = useState(offScrollProp);
 	const [ratioSizes, setRatioSizes] = useState({});
+	const [stylesPlaceholder, setStylesPlaceholder] = useState({
+		display: 'block'
+	});
 	useEffect(() => {
 		setScrollStatus(offScrollProp);
 	}, [offScrollProp]);
