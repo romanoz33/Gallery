@@ -1,8 +1,10 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { useOverrides } from '@quarkly/components';
-import { Box } from '@quarkly/widgets';
+import { Box, Button } from '@quarkly/widgets';
 import Item from './Item';
 import Lightbox from './Lightbox';
+const rowsCountLoader = 2;
+const windowHeightSize = 1.5;
 const overrides = {
 	'Wrapper': {
 		'kind': 'Box'
@@ -19,6 +21,26 @@ const overrides = {
 			'height': 0,
 			'min-height': 0
 		}
+	},
+	'Button More': {
+		'kind': 'Button',
+		'props': {
+			'margin': '0 auto',
+			'display': 'block',
+			'margin-top': '20px'
+		}
+	},
+	'Button More:on': {
+		'kind': 'Button',
+		'props': {
+			'display': 'block'
+		}
+	},
+	'Button More:off': {
+		'kind': 'Button',
+		'props': {
+			'display': 'none'
+		}
 	}
 };
 
@@ -31,14 +53,12 @@ const changeStrInNumber = str => {
 	}
 
 	return `${newStr}`;
-}; // Собираем и храним все ref картинок
-
-
-const allRef = [];
-
-const addRef = (index, ref) => {
-	allRef[index] = ref;
-}; // Собираем и храним все пропсы по картинкам
+}; // // Собираем и храним все ref картинок
+// const allRef = [];
+// const addRef = (index, ref) => {
+//   allRef[index] = ref;
+// }   
+// Собираем и храним все пропсы по картинкам
 
 
 const picturesParams = [];
@@ -54,32 +74,62 @@ const addPictureParams = (index, data) => {
 		'objectPosition': data.objectPositionFull,
 		'loading': data.loadingFull
 	};
-}; // Функция проверки входит ли картинка в 1.5 экрана
+}; // const getAPI = () => {
+//   if (typeof window !== "undefined") {
+//     return window.QAPI || {};
+//   }
+//   if (typeof global !== "undefined") {
+//     return global.QAPI || {};
+//   }
+//   return {};
+// }; 
 
 
-const checkOnView = sizes => {
-	const visibleSpace = window.innerHeight + window.innerHeight / 2;
-	if (sizes.top + sizes.height < visibleSpace + window.scrollY) return true;
-	return false;
-}; // Функция замены src картинок
+const getVisibleSpace = () => {
+	return window.innerHeight * windowHeightSize;
+}; // // Функция проверки входит ли картинка в 1.5 экрана
+// const checkOnView = (sizes) => {
+//   const visibleSpace = window.innerHeight + (window.innerHeight / 2);
+//   if (sizes.top + sizes.height < visibleSpace + window.scrollY) return true;
+//   return false;
+// }; 
+// // Функция замены src картинок при скроле
+// const setSrcOnScroll = () => {
+//   allRef.forEach((img) => {
+//     if(img.getAttribute('data-src')) { 
+//       const sizes = img.getBoundingClientRect();
+//       console.log(checkOnView(sizes))
+//       console.log(sizes)
+//       console.log(img)
+//       if(checkOnView(sizes)) { 
+//         const src = img.getAttribute('data-src');
+//         img.setAttribute('src', src);
+//         img.removeAttribute('data-src'); 
+//       }
+//     }  
+// 	})  
+// };
+// // Функция замены src картинок
+// const setSrcAlways = () => {
+//   allRef.forEach((img) => {
+//     if(img.getAttribute('data-src')) { 
+//       const src = img.getAttribute('data-src');
+//       img.setAttribute('src', src);
+//       img.removeAttribute('data-src'); 
+//     }   
+//   })
+// };
+// // Функция замены src картинок
+// const setSrcSome = (count) => {
+//   allRef.forEach((img) => {
+//     if(img.getAttribute('data-src')) { 
+//       const src = img.getAttribute('data-src');
+//       img.setAttribute('src', src);
+//       img.removeAttribute('data-src'); 
+//     }   
+//   })
+// };
 
-
-const setSrc = () => {
-	allRef.forEach(img => {
-		if (img.getAttribute('data-src')) {
-			const sizes = img.getBoundingClientRect();
-			console.log(checkOnView(sizes));
-			console.log(sizes);
-			console.log(img);
-
-			if (checkOnView(sizes)) {
-				const src = img.getAttribute('data-src');
-				img.setAttribute('src', src);
-				img.removeAttribute('data-src');
-			}
-		}
-	});
-};
 
 const Gallery = ({
 	galleryItemCountProp,
@@ -102,14 +152,34 @@ const Gallery = ({
 	const [isZoom, setZoom] = useState(false);
 	const [scrollStatus, setScrollStatus] = useState(offScrollProp);
 	const [ratioSizes, setRatioSizes] = useState({});
+	const [isLoading, setLoading] = useState([]); // Получаем размер изображения 
+
+	const getItemSize = window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp; // Функция проверки входит ли картинка в 1.5 экрана
+
+	const checkOnView = () => {
+		const visibleSpace = getVisibleSpace();
+		const rowCount = galleryItemCountProp / columnsCountProp;
+		const itemWidth = window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp;
+	};
+
+	console.log(getItemSize);
 	useEffect(() => {
 		setScrollStatus(offScrollProp);
-	}, [offScrollProp]);
-	useEffect(() => {
-		setSrc();
-		window.addEventListener('scroll', setSrc);
-		window.addEventListener('resize', setSrc);
-	}, []); // Условие, чтобы количество Item было не меньше 0.
+	}, [offScrollProp]); // useEffect(() => {  
+	//     switch (loaderFormatProp) { 
+	//   case 'Все сразу':
+	//     setSrcOnScroll();  
+	//     window.addEventListener('scroll', setSrcOnScroll); 
+	//     window.addEventListener('resize', setSrcOnScroll);
+	//     window.addEventListener('orientationchange', setSrcOnScroll);
+	//     break;
+	//   case 'При скроле':
+	//     setSrcAlways();
+	//     break;
+	//   default:
+	//   } 
+	// }, [loaderFormatProp]);   
+	// Условие, чтобы количество Item было не меньше 0.
 	// Иначе получаем ошибку при переборе массива
 
 	if (galleryItemCountProp > 0) {
@@ -137,14 +207,18 @@ const Gallery = ({
 		ratioSizes={ratioSizes}
 		setRatioSizes={setRatioSizes}
 		ratioFormatsProp={ratioFormatsProp}
-		columnsCountProp={columnsCountProp}
-		borderWidthProp={borderWidthProp}
 		imagesMinWidthProp={imagesMinWidthProp}
 		imagesMaxWidthProp={imagesMaxWidthProp}
 		autoFillInProp={autoFillInProp}
 		loaderFormatProp={loaderFormatProp}
+		isLoading={isLoading}
+		setLoading={setLoading}
+		getVisibleSpace={getVisibleSpace}
 		galleryItemCountProp={galleryItemCountProp}
-		addRef={addRef}
+		columnsCountProp={columnsCountProp}
+		borderWidthProp={borderWidthProp}
+		getItemSize={getItemSize} // addRef={addRef} 
+
 	/>);
 	return <Box {...rest}>
 		      
@@ -172,7 +246,13 @@ const Gallery = ({
       
 		</Box>
 		  
-       
+        
+		<Button {...override(`Button More`, `Button More${loaderFormatProp === 'По кнопке' ? ':on' : ':off'}`)} // onClick={} 
+		>
+			          Загрузить еще
+        
+		</Button>
+		       
 		<Lightbox
 			{...override(`Lightbox`)}
 			picturesParams={picturesParams}

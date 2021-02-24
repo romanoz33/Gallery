@@ -16,6 +16,18 @@ const overrides = {
 			'icon': AiOutlineLoading,
 			'size': '30px'
 		}
+	},
+	'Loader:on': {
+		'kind': 'Icon',
+		'props': {
+			'display': 'block'
+		}
+	},
+	'Loader:off': {
+		'kind': 'Icon',
+		'props': {
+			'display': 'none'
+		}
 	}
 };
 
@@ -59,21 +71,26 @@ const Item = ({
 	ratioSizes,
 	setRatioSizes,
 	ratioFormatsProp,
-	columnsCountProp,
-	borderWidthProp,
 	imagesMinWidthProp,
 	imagesMaxWidthProp,
 	autoFillInProp,
 	loaderFormatProp,
+	// addRef,	
+	isLoading,
+	setLoading,
+	getVisibleSpace,
 	galleryItemCountProp,
-	addRef,
+	columnsCountProp,
+	borderWidthProp,
+	getItemSize,
 	...props
 }) => {
 	const {
 		override,
 		rest
 	} = useOverrides(props, overrides);
-	const imageRef = useRef();
+	const [isLoading2, setLoading2] = useState(false); // const imageRef = useRef();  
+
 	const boxRef = useRef(); // Функция для записи всех картинок в объект
 
 	addPictureParams(index, {
@@ -91,31 +108,27 @@ const Item = ({
 		setIndex(selectdIndex);
 	}, [showImageProp, selectdIndex]);
 	useEffect(() => {
-		addRef(index, imageRef.current);
-	}, []); // useEffect(() => {   
-	// 	loadImage(srcPreview).then(img => { 
-	// 	checkOnView(imageRef.current);
-	// 		imageRef.current.src = srcPreview;   
-	// 		// imageRef.current.style.backgroundImage = 'none'; 
-	// 	});  
-	// }, [ratioFormatsProp]);  
+		loadImage(srcPreview).then(img => {
+			setLoading2(true); // checkOnView(imageRef.current);
+		});
+	}, [ratioFormatsProp]); // const openGalleryItem = useCallback((e) => {		
+	// 	loadImage(srcFull)  
+	// 	.then(img => {
+	// 		setIndex(index);
+	// 		setBigImage(false);
+	// 		setOpen(true);
+	// 		if (scrollStatus) scroll.disable();
+	// 		if (img.width > window.innerWidth) setBigImage(true);
+	// 	}); 
+	// 	window.addEventListener('keydown', (e) => {
+	// 		if (e.keyCode === 27) { 
+	// 			setOpen(false);  
+	// 			setZoom(false);
+	// 			if (scrollStatus) scroll.enable();
+	// 		} 
+	// 	});	 
+	// }, [isOpen, index, isBigImage, scrollStatus]); 
 
-	const openGalleryItem = useCallback(e => {
-		loadImage(srcFull).then(img => {
-			setIndex(index);
-			setBigImage(false);
-			setOpen(true);
-			if (scrollStatus) scroll.disable();
-			if (img.width > window.innerWidth) setBigImage(true);
-		});
-		window.addEventListener('keydown', e => {
-			if (e.keyCode === 27) {
-				setOpen(false);
-				setZoom(false);
-				if (scrollStatus) scroll.enable();
-			}
-		});
-	}, [isOpen, index, isBigImage, scrollStatus]);
 	const changeFormat = useCallback((format, sizes) => {
 		const params = {
 			width: sizes.width,
@@ -183,12 +196,13 @@ const Item = ({
 		height='auto'
 	>
 		 
-		<Image
-			ref={imageRef}
+		<Image // ref={imageRef} 
+
 			onClick={e => openGalleryItem(e)}
 			max-width='100%'
 			max-height='100%'
-			display='block'
+			width={getItemSize}
+			height={getItemSize}
 			min-width={imagesAutoResizeProp ? '100%' : 'auto'}
 			min-height={imagesAutoResizeProp ? '100%' : 'auto'}
 			object-fit={imagesAutoResizeProp ? 'cover' : objectFitPreview}
@@ -196,21 +210,16 @@ const Item = ({
 			sizes={sizesPreview}
 			alt={altPreview}
 			title={titlePreview}
-			object-position={objectPositionPreview} // loading={loadingPreview} 
-			// src={srcPreview}
-
-			src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAGQCAYAAAAUdV17AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAHmSURBVHgB7cCBAAAAAICg/akXqQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAaVPkAAR4KkGUAAAAASUVORK5CYII='
-			data-src={srcPreview}
-			background-image='url(https://media2.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif?cid=ecf05e47w5icg0kkchsj6di3haw72lfkcuo7s9ge2ctq93r6&rid=giphy.gif)'
-			background-repeat='no-repeat'
-			background-position='center'
+			object-position={objectPositionPreview}
+			src={isLoading2 ? srcPreview : ''}
 			{...ratioSizes}
 		/>
 		 
+			 
+		<Loader {...override('Loader', `Loader:${isLoading2 ? 'off' : 'on'}`)} />
+		 
 	</Box>;
-}; // <Loader  
-// 	{...override('Loader', `Loader ${index}`)} 
-// />
+}; //
 
 
 const propInfo = {
