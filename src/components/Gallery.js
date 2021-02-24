@@ -31,25 +31,46 @@ const changeStrInNumber = str => {
 	}
 
 	return `${newStr}`;
-};
+}; // Собираем и храним все ref картинок
 
-const checkOnView = sizes => {
-	const visibleSpace = window.innerHeight + window.innerHeight / 2;
-	console.log(visibleSpace);
-	if (sizes.top + sizes.height < visibleSpace + window.scrollY) return true;
-	return false;
-};
 
 const allRef = [];
 
 const addRef = (index, ref) => {
 	allRef[index] = ref;
-};
+}; // Собираем и храним все пропсы по картинкам
+
+
+const picturesParams = [];
+
+const addPictureParams = (index, data) => {
+	picturesParams[index] = {
+		'src': data.srcFull,
+		'srcset': data.srcSetFull,
+		'sizes': data.sizesFull,
+		'alt': data.altFull,
+		'title': data.titleFull,
+		'objectFit': data.objectFitFull,
+		'objectPosition': data.objectPositionFull,
+		'loading': data.loadingFull
+	};
+}; // Функция проверки входит ли картинка в 1.5 экрана
+
+
+const checkOnView = sizes => {
+	const visibleSpace = window.innerHeight + window.innerHeight / 2;
+	if (sizes.top + sizes.height < visibleSpace + window.scrollY) return true;
+	return false;
+}; // Функция замены src картинок
+
 
 const setSrc = () => {
 	allRef.forEach(img => {
 		if (img.getAttribute('data-src')) {
 			const sizes = img.getBoundingClientRect();
+			console.log(checkOnView(sizes));
+			console.log(sizes);
+			console.log(img);
 
 			if (checkOnView(sizes)) {
 				const src = img.getAttribute('data-src');
@@ -81,9 +102,6 @@ const Gallery = ({
 	const [isZoom, setZoom] = useState(false);
 	const [scrollStatus, setScrollStatus] = useState(offScrollProp);
 	const [ratioSizes, setRatioSizes] = useState({});
-	const [stylesPlaceholder, setStylesPlaceholder] = useState({
-		display: 'block'
-	});
 	useEffect(() => {
 		setScrollStatus(offScrollProp);
 	}, [offScrollProp]);
@@ -91,31 +109,8 @@ const Gallery = ({
 		setSrc();
 		window.addEventListener('scroll', setSrc);
 		window.addEventListener('resize', setSrc);
-	}, []);
-	const picturesParams = [];
-
-	const addPictureParams = (index, data) => {
-		picturesParams[index] = {
-			'src': data.srcFull,
-			'srcset': data.srcSetFull,
-			'sizes': data.sizesFull,
-			'alt': data.altFull,
-			'title': data.titleFull,
-			'objectFit': data.objectFitFull,
-			'objectPosition': data.objectPositionFull,
-			'loading': data.loadingFull
-		};
-	}; // useEffect(() => { 
-	//   // const tooltipPapams = imageBlockRef.current.getBoundingClientRect();
-	//   console.log(imageBlockRef.current.getBoundingClientRect())
-	//   setRatioSizes({ 
-	//     width: '100%', 
-	//     height: '56.25%'
-	//   }); 
-	// }, [ratioFormatsProp]);   
-	// Условие, чтобы количество Item было не меньше 0.
+	}, []); // Условие, чтобы количество Item было не меньше 0.
 	// Иначе получаем ошибку при переборе массива
-
 
 	if (galleryItemCountProp > 0) {
 		galleryItemCountProp = parseInt(galleryItemCountProp);
