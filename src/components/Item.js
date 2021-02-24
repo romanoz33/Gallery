@@ -168,9 +168,9 @@ const Item = ({
 		// 		// imageRef.current.src = srcPreview;    
 		// });  
 	}, []);
-	useEffect(() => {
-		// loadImage(srcPreview).then(img => {  
-		imageRef.current.src = srcPreview; // });
+	useEffect(() => {// loadImage(srcPreview).then(img => {  
+		// imageRef.current.src = srcPreview;   
+		// });
 	}, []);
 	return <Box
 		ref={boxRef}
