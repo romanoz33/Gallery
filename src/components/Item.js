@@ -92,8 +92,7 @@ const Item = ({
 	}, [showImageProp, selectdIndex]);
 	useEffect(() => {
 		addRef(index, imageRef.current);
-	}, []); // }, [loaderFormatProp]); 
-	// useEffect(() => {   
+	}, []); // useEffect(() => {   
 	// 	loadImage(srcPreview).then(img => { 
 	// 	checkOnView(imageRef.current);
 	// 		imageRef.current.src = srcPreview;   
@@ -162,33 +161,16 @@ const Item = ({
 	useEffect(() => {
 		const sizes = boxRef.current.getBoundingClientRect();
 		changeFormat(ratioFormatsProp, sizes);
-	}, [ratioFormatsProp, columnsCountProp, borderWidthProp, imagesMinWidthProp, imagesMaxWidthProp, autoFillInProp]); // useEffect(() => { 
-	// 	const sizes = boxRef.current.getBoundingClientRect();
-	// 	setRatioSizes({
-	// 		height: sizes.width,
-	// 		width: sizes.width,
-	// 	})
-	// }, []); 
-
+	}, [ratioFormatsProp, columnsCountProp, borderWidthProp, imagesMinWidthProp, imagesMaxWidthProp, autoFillInProp]);
 	useEffect(() => {// if (loaderFormatProp === 'Все сразу') setSrc(imageRef.current);
 		// if (loaderFormatProp === 'При скроле') lazyLoader(imageRef.current);
 		// loadImage(srcPreview).then(img => {  
 		// 		// imageRef.current.src = srcPreview;    
 		// });  
-		// console.log(columnsCountProp, galleryItemCountProp)
-		// lazyLoader(imageRef.current, columnsCountProp, index);
-		// lazyLoader(imageRef.current);
-		// console.log(imageRef.current.getBoundingClientRect())
-		// console.log(imageRef.current.clientHeight )
-		// console.log(imageRef) 
 	}, []);
 	useEffect(() => {
 		// loadImage(srcPreview).then(img => {  
-		imageRef.current.src = srcPreview; // ddd = {
-		// 	display: 'none'
-		// }
-		// console.log(loadddRef.current)  
-		// });
+		imageRef.current.src = srcPreview; // });
 	}, []);
 	return <Box
 		ref={boxRef}
@@ -209,12 +191,12 @@ const Item = ({
 			display='block'
 			min-width={imagesAutoResizeProp ? '100%' : 'auto'}
 			min-height={imagesAutoResizeProp ? '100%' : 'auto'}
-			object-fit={imagesAutoResizeProp ? 'cover' : objectFitPreview} // srcset={srcSetPreview}
-			// sizes={sizesPreview}
-			// alt={altPreview} 
-			// title={titlePreview}
-			// object-position={objectPositionPreview}
-			// loading={loadingPreview} 
+			object-fit={imagesAutoResizeProp ? 'cover' : objectFitPreview}
+			srcset={srcSetPreview}
+			sizes={sizesPreview}
+			alt={altPreview}
+			title={titlePreview}
+			object-position={objectPositionPreview} // loading={loadingPreview} 
 			// src={srcPreview}
 
 			src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAGQCAYAAAAUdV17AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAHmSURBVHgB7cCBAAAAAICg/akXqQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAaVPkAAR4KkGUAAAAASUVORK5CYII='

@@ -31,41 +31,22 @@ const changeStrInNumber = str => {
 	}
 
 	return `${newStr}`;
-}; // const checkOnView = (sizes) => {
-//   const visibleSpace = window.innerHeight + (window.innerHeight / 2);
-//   console.log(visibleSpace)
-//   if (sizes.top + sizes.height < visibleSpace + window.scrollY) return true;
-//   return false;
-// }; 
-// const setSrc = (img) => {
-//   const sizes = img.getBoundingClientRect();
-//   if(checkOnView(sizes)) { 
-//     // const src = img.getAttribute('data-src');
-//     // img.setAttribute('src', src); 
-//   } 
-//    console.log(checkOnView(sizes))
-//     console.log(sizes)   
-// };
+};
 
+const checkOnView = sizes => {
+	const visibleSpace = window.innerHeight + window.innerHeight / 2;
+	console.log(visibleSpace);
+	if (sizes.top + sizes.height < visibleSpace + window.scrollY) return true;
+	return false;
+};
 
 const allRef = [];
 
 const addRef = (index, ref) => {
 	allRef[index] = ref;
-}; // const lazyLoader = (img) => { 
-//   window.addEventListener('load', setSrc(img)); 
-//   window.addEventListener('scroll', setSrc(img)); 
-//   window.addEventListener('resize', setSrc(img)); 
-// }
-
-
-const checkOnView = sizes => {
-	const visibleSpace = window.innerHeight + window.innerHeight / 2;
-	if (sizes.top + sizes.height < visibleSpace + window.scrollY) return true;
-	return false;
 };
 
-const cheche = () => {
+const setSrc = () => {
 	allRef.forEach(img => {
 		if (img.getAttribute('data-src')) {
 			const sizes = img.getBoundingClientRect();
@@ -106,9 +87,10 @@ const Gallery = ({
 	useEffect(() => {
 		setScrollStatus(offScrollProp);
 	}, [offScrollProp]);
-	useEffect(() => {// cheche();  
-		// window.addEventListener('scroll', cheche); 
-		// window.addEventListener('resize', cheche); 
+	useEffect(() => {
+		setSrc();
+		window.addEventListener('scroll', setSrc);
+		window.addEventListener('resize', setSrc);
 	}, []);
 	const picturesParams = [];
 
