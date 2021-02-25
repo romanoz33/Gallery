@@ -74,62 +74,23 @@ const addPictureParams = (index, data) => {
 		'objectPosition': data.objectPositionFull,
 		'loading': data.loadingFull
 	};
-}; // const getAPI = () => {
-//   if (typeof window !== "undefined") {
-//     return window.QAPI || {};
-//   }
-//   if (typeof global !== "undefined") {
-//     return global.QAPI || {};
-//   }
-//   return {};
-// }; 
+};
 
+const getAPI = () => {
+	if (typeof window !== "undefined") {
+		return window.QAPI || {};
+	}
+
+	if (typeof global !== "undefined") {
+		return global.QAPI || {};
+	}
+
+	return {};
+};
 
 const getVisibleSpace = () => {
 	return window.innerHeight * windowHeightSize;
-}; // // Функция проверки входит ли картинка в 1.5 экрана
-// const checkOnView = (sizes) => {
-//   const visibleSpace = window.innerHeight + (window.innerHeight / 2);
-//   if (sizes.top + sizes.height < visibleSpace + window.scrollY) return true;
-//   return false;
-// }; 
-// // Функция замены src картинок при скроле
-// const setSrcOnScroll = () => {
-//   allRef.forEach((img) => {
-//     if(img.getAttribute('data-src')) { 
-//       const sizes = img.getBoundingClientRect();
-//       console.log(checkOnView(sizes))
-//       console.log(sizes)
-//       console.log(img)
-//       if(checkOnView(sizes)) { 
-//         const src = img.getAttribute('data-src');
-//         img.setAttribute('src', src);
-//         img.removeAttribute('data-src'); 
-//       }
-//     }  
-// 	})  
-// };
-// // Функция замены src картинок
-// const setSrcAlways = () => {
-//   allRef.forEach((img) => {
-//     if(img.getAttribute('data-src')) { 
-//       const src = img.getAttribute('data-src');
-//       img.setAttribute('src', src);
-//       img.removeAttribute('data-src'); 
-//     }   
-//   })
-// };
-// // Функция замены src картинок
-// const setSrcSome = (count) => {
-//   allRef.forEach((img) => {
-//     if(img.getAttribute('data-src')) { 
-//       const src = img.getAttribute('data-src');
-//       img.setAttribute('src', src);
-//       img.removeAttribute('data-src'); 
-//     }   
-//   })
-// };
-
+};
 
 const Gallery = ({
 	galleryItemCountProp,
@@ -151,18 +112,35 @@ const Gallery = ({
 	const [isBigImage, setBigImage] = useState(false);
 	const [isZoom, setZoom] = useState(false);
 	const [scrollStatus, setScrollStatus] = useState(offScrollProp);
-	const [ratioSizes, setRatioSizes] = useState({});
-	const [isLoading, setLoading] = useState([]); // Получаем размер изображения 
+	const [ratioSizes, setRatioSizes] = useState({}); // Кол-во изображений, которые нужно загружать
 
-	const getItemSize = window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp; // Функция проверки входит ли картинка в 1.5 экрана
+	const [itemsLoadingCount, setItemsLoadingCount] = useState();
+	const galleryRef = useRef(); // Получаем ширину ячейки 
 
-	const checkOnView = () => {
-		const visibleSpace = getVisibleSpace();
-		const rowCount = galleryItemCountProp / columnsCountProp;
-		const itemWidth = window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp;
+	const getItemSize = window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp; // Получаем количество картинок, котороые помещаются в видимую область
+
+	const getItemCountOnView = () => {
+		const {
+			mode,
+			projectType
+		} = getAPI();
+		if (mode === 'development') return parseInt(galleryItemCountProp); // Высота 1.5 окна
+
+		const visibleSpace = getVisibleSpace(); // Примерная ширина и высота картинки 
+
+		const itemWidth = window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp; // Кол-во рядов. Округляем в большую сторону
+
+		const visibleRows = Math.ceil(visibleSpace / itemWidth); // Возвращаем кол-во изображений
+
+		return visibleRows * columnsCountProp;
 	};
 
-	console.log(getItemSize);
+	useEffect(() => {
+		const items = getItemCountOnView();
+		setItemsLoadingCount(items);
+		console.log(items);
+		console.log(itemsLoadingCount);
+	}, []);
 	useEffect(() => {
 		setScrollStatus(offScrollProp);
 	}, [offScrollProp]); // useEffect(() => {  
@@ -192,7 +170,7 @@ const Gallery = ({
 		override,
 		rest
 	} = useOverrides(props, overrides);
-	const items = Array(galleryItemCountProp).fill().map((item, index) => <Item
+	const items = Array(itemsLoadingCount).fill().map((item, index) => <Item
 		{...override(`Item`, `Item ${index}`)}
 		index={index}
 		addPictureParams={addPictureParams}
@@ -211,34 +189,40 @@ const Gallery = ({
 		imagesMaxWidthProp={imagesMaxWidthProp}
 		autoFillInProp={autoFillInProp}
 		loaderFormatProp={loaderFormatProp}
-		isLoading={isLoading}
-		setLoading={setLoading}
 		getVisibleSpace={getVisibleSpace}
 		galleryItemCountProp={galleryItemCountProp}
 		columnsCountProp={columnsCountProp}
 		borderWidthProp={borderWidthProp}
-		getItemSize={getItemSize} // addRef={addRef} 
+		getItemSize={getItemSize}
+		getAPI={getAPI}
+		galleryRef={galleryRef} // addRef={addRef} 
 
 	/>);
 	return <Box {...rest}>
 		      
-		<Box display='grid' grid-gap={`${changeStrInNumber(borderWidthProp)}`} grid-auto-flow={autoFillInProp ? 'dense' : 'row'} grid-template-columns={`repeat(${columnsCountProp}, 
+		<Box
+			ref={galleryRef}
+			display='grid'
+			grid-gap={`${changeStrInNumber(borderWidthProp)}`}
+			grid-auto-flow={autoFillInProp ? 'dense' : 'row'}
+			grid-template-columns={`repeat(${columnsCountProp}, 
           minmax(${changeStrInNumber(imagesMinWidthProp)}, 
           ${changeStrInNumber(imagesMaxWidthProp)}))`} // lg-grid-template-columns={
-		//   `repeat(${lgColumnsCountProp}, 
-		//   minmax(${changeStrInNumber(imagesMinWidthProp)}, 
-		//   ${changeStrInNumber(imagesMaxWidthProp)}))`
-		// }
-		// md-grid-template-columns={
-		//   `repeat(${mdColumnsCountProp}, 
-		//   minmax(${changeStrInNumber(imagesMinWidthProp)},  
-		//   ${changeStrInNumber(imagesMaxWidthProp)}))`
-		// }
-		// sm-grid-template-columns={
-		//   `repeat(${smColumnsCountProp}, 
-		//   minmax(${changeStrInNumber(imagesMinWidthProp)}, 
-		//   ${changeStrInNumber(imagesMaxWidthProp)}))`
-		// }
+			//   `repeat(${lgColumnsCountProp}, 
+			//   minmax(${changeStrInNumber(imagesMinWidthProp)}, 
+			//   ${changeStrInNumber(imagesMaxWidthProp)}))`
+			// }
+			// md-grid-template-columns={
+			//   `repeat(${mdColumnsCountProp}, 
+			//   minmax(${changeStrInNumber(imagesMinWidthProp)},  
+			//   ${changeStrInNumber(imagesMaxWidthProp)}))`
+			// }
+			// sm-grid-template-columns={
+			//   `repeat(${smColumnsCountProp}, 
+			//   minmax(${changeStrInNumber(imagesMinWidthProp)}, 
+			//   ${changeStrInNumber(imagesMaxWidthProp)}))`
+			// }
+
 		>
 			        
 			{items}

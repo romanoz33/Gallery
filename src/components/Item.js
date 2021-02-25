@@ -76,20 +76,20 @@ const Item = ({
 	autoFillInProp,
 	loaderFormatProp,
 	// addRef,	
-	isLoading,
-	setLoading,
 	getVisibleSpace,
 	galleryItemCountProp,
 	columnsCountProp,
 	borderWidthProp,
 	getItemSize,
+	getAPI,
+	galleryRef,
 	...props
 }) => {
 	const {
 		override,
 		rest
 	} = useOverrides(props, overrides);
-	const [isLoading2, setLoading2] = useState(false); // const imageRef = useRef();  
+	const [isLoading, setLoading] = useState(false); // const imageRef = useRef();  
 
 	const boxRef = useRef(); // Функция для записи всех картинок в объект
 
@@ -109,9 +109,22 @@ const Item = ({
 	}, [showImageProp, selectdIndex]);
 	useEffect(() => {
 		loadImage(srcPreview).then(img => {
-			setLoading2(true); // checkOnView(imageRef.current);
+			const {
+				mode,
+				projectType
+			} = getAPI(); // console.log(galleryRef)
+
+			if (mode === 'development') {
+				setLoading(true);
+			} else {
+				if (checkOnView()) {
+					console.log('true');
+				}
+			}
+
+			setLoading(true);
 		});
-	}, [ratioFormatsProp]); // const openGalleryItem = useCallback((e) => {		
+	}, []); // const openGalleryItem = useCallback((e) => {		
 	// 	loadImage(srcFull)  
 	// 	.then(img => {
 	// 		setIndex(index);
@@ -175,16 +188,6 @@ const Item = ({
 		const sizes = boxRef.current.getBoundingClientRect();
 		changeFormat(ratioFormatsProp, sizes);
 	}, [ratioFormatsProp, columnsCountProp, borderWidthProp, imagesMinWidthProp, imagesMaxWidthProp, autoFillInProp]);
-	useEffect(() => {// if (loaderFormatProp === 'Все сразу') setSrc(imageRef.current);
-		// if (loaderFormatProp === 'При скроле') lazyLoader(imageRef.current);
-		// loadImage(srcPreview).then(img => {  
-		// 		// imageRef.current.src = srcPreview;    
-		// });  
-	}, []);
-	useEffect(() => {// loadImage(srcPreview).then(img => {  
-		// imageRef.current.src = srcPreview;   
-		// });
-	}, []);
 	return <Box
 		ref={boxRef}
 		{...rest}
@@ -196,8 +199,7 @@ const Item = ({
 		height='auto'
 	>
 		 
-		<Image // ref={imageRef} 
-
+		<Image
 			onClick={e => openGalleryItem(e)}
 			max-width='100%'
 			max-height='100%'
@@ -208,15 +210,15 @@ const Item = ({
 			object-fit={imagesAutoResizeProp ? 'cover' : objectFitPreview}
 			srcset={srcSetPreview}
 			sizes={sizesPreview}
-			alt={altPreview}
 			title={titlePreview}
 			object-position={objectPositionPreview}
-			src={isLoading2 ? srcPreview : ''}
+			alt={altPreview ? altPreview : ''}
+			src={isLoading ? srcPreview : ''}
 			{...ratioSizes}
 		/>
 		 
 			 
-		<Loader {...override('Loader', `Loader:${isLoading2 ? 'off' : 'on'}`)} />
+		<Loader {...override('Loader', `Loader:${isLoading ? 'off' : 'on'}`)} />
 		 
 	</Box>;
 }; //
