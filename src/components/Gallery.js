@@ -74,16 +74,19 @@ const addPictureParams = (index, data) => {
 		'objectPosition': data.objectPositionFull,
 		'loading': data.loadingFull
 	};
-}; // const getAPI = () => {
-//   if (typeof window !== "undefined") {
-//     return window.QAPI || {};
-//   }
-//   if (typeof global !== "undefined") {
-//     return global.QAPI || {};
-//   }
-//   return {};
-// }; 
+};
 
+const getAPI = () => {
+	if (typeof window !== "undefined") {
+		return window.QAPI || {};
+	}
+
+	if (typeof global !== "undefined") {
+		return global.QAPI || {};
+	}
+
+	return {};
+};
 
 const getVisibleSpace = () => {
 	return window.innerHeight * windowHeightSize;
@@ -116,26 +119,28 @@ const Gallery = ({
 	const getItemSize = () => {
 		return window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp;
 	}; // Получаем количество картинок, котороые помещаются в видимую область
-	// const getItemCountOnView = () => {
-	//   const { mode, projectType } = getAPI(); 
-	//   if (mode === 'development') return parseInt(galleryItemCountProp);
-	//   // Высота 1.5 окна
-	//   const visibleSpace = getVisibleSpace();
-	//   // Примерная ширина и высота картинки 
-	//   const itemWidth = window.innerWidth / columnsCountProp - ((columnsCountProp - 1) * borderWidthProp);
-	//   // Кол-во рядов. Округляем в большую сторону
-	//   const visibleRows = Math.ceil(visibleSpace / itemWidth);
-	//   // Возвращаем кол-во изображений
-	//   return visibleRows * columnsCountProp;    
-	// } 
-	// useEffect(() => {    
-	//   const itemss = getItemCountOnView();
-	//   setItemsLoadingCount(itemss); 
-	//   console.log(itemss)  
-	//   console.log(itemsLoadingCount)    
-	// }, []);   
 
 
+	const getItemCountOnView = () => {
+		const {
+			mode,
+			projectType
+		} = getAPI();
+		if (mode === 'development') return parseInt(galleryItemCountProp); // Высота 1.5 окна
+
+		const visibleSpace = getVisibleSpace(); // Кол-во рядов. Округляем в большую сторону
+
+		const visibleRows = Math.ceil(visibleSpace / getItemSize()); // Возвращаем кол-во изображений
+
+		return visibleRows * columnsCountProp;
+	};
+
+	useEffect(() => {
+		const itemss = getItemCountOnView();
+		setItemsLoadingCount(itemss);
+		console.log(itemss);
+		console.log(itemsLoadingCount);
+	}, []);
 	useEffect(() => {
 		setScrollStatus(offScrollProp);
 	}, [offScrollProp]); // useEffect(() => {  
@@ -146,8 +151,8 @@ const Gallery = ({
 	//     window.addEventListener('resize', setSrcOnScroll);
 	//     window.addEventListener('orientationchange', setSrcOnScroll);
 	//     break;
-	//   case 'При скроле':
-	//     setSrcAlways();
+	//   case 'При скроле': 
+	//     setSrcAlways();  
 	//     break;
 	//   default:
 	//   } 
@@ -189,7 +194,6 @@ const Gallery = ({
 		columnsCountProp={columnsCountProp}
 		borderWidthProp={borderWidthProp}
 		getItemSize={getItemSize} // getAPI={getAPI}
-		// addRef={addRef} 
 
 	/>);
 	return <Box {...rest}>
