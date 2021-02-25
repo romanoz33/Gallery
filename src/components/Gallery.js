@@ -136,9 +136,9 @@ const Gallery = ({
 	};
 
 	useEffect(() => {
-		const items = getItemCountOnView();
-		setItemsLoadingCount(items);
-		console.log(items);
+		const itemss = getItemCountOnView();
+		setItemsLoadingCount(itemss);
+		console.log(itemss);
 		console.log(itemsLoadingCount);
 	}, []);
 	useEffect(() => {
