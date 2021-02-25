@@ -151,7 +151,13 @@ const Gallery = ({
 	const loadMore = () => {
 		setLoadingNumbers(loadingNumbers + 1);
 		const items = getItemCountOnView();
-		setItemsLoadingCount(items * loadingNumbers);
+		const newItems = items * loadingNumbers;
+
+		if (newItems < galleryItemCountProp) {
+			setItemsLoadingCount(newItems);
+		} else {
+			setItemsLoadingCount(galleryItemCountProp);
+		}
 	};
 
 	useEffect(() => {
