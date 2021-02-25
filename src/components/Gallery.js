@@ -107,20 +107,20 @@ const Gallery = ({
 	const [isBigImage, setBigImage] = useState(false);
 	const [isZoom, setZoom] = useState(false);
 	const [scrollStatus, setScrollStatus] = useState(offScrollProp);
-	const [ratioSizes, setRatioSizes] = useState({}); // Кол-во изображений, которые нужно загружать
+	const [ratioSizes, setRatioSizes] = useState({}); // Статус кнопки
 
-	const [isButton, setIsButton] = useState();
+	const [isButton, setButton] = useState();
 	useEffect(() => {
 		if (loaderFormatProp === 'По кнопке') {
-			setIsButton(true);
+			setButton(true);
 		} else {
-			setIsButton(false);
+			setButton(false);
 		}
-	}, [loaderFormatProp]); // Кол-во изображений, которые нужно загружать
+	}, [loaderFormatProp]); // Кол-во изображений, которые нужно загружать изначально
 
-	const [itemsLoadingCount, setItemsLoadingCount] = useState(); // Кол-во дозагрузок
+	const [itemsLoadingCount, setItemsLoadingCount] = useState(); // Кол-во рядов дозагрузок
 
-	const [loadingNumbers, setLoadingNumbers] = useState(1); // Получаем ширину ячейки 
+	const [loadingNumbers, setLoadingNumbers] = useState(2); // Получаем примерную ширину ячейки 
 
 	const getItemSize = () => {
 		return window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp;
@@ -131,8 +131,8 @@ const Gallery = ({
 		const {
 			mode,
 			projectType
-		} = getAPI();
-		if (mode === 'development') return parseInt(galleryItemCountProp); // Высота 1.5 окна
+		} = getAPI(); // if (mode === 'development') return parseInt(galleryItemCountProp);
+		// Высота 1.5 окна
 
 		const visibleSpace = getVisibleSpace(); // Кол-во рядов. Округляем в большую сторону
 
@@ -146,17 +146,21 @@ const Gallery = ({
 	useEffect(() => {
 		const items = getItemCountOnView();
 		setItemsLoadingCount(items);
-	}, [galleryItemCountProp, columnsCountProp, borderWidthProp]);
+		if (items == galleryItemCountProp) setButton(false);
+	}, [galleryItemCountProp, columnsCountProp, borderWidthProp]); // Функция дозагрузки по клику
 
-	const loadMore = () => {
-		setLoadingNumbers(loadingNumbers + 1);
+	const loadMore = e => {
+		// setLoadingNumbers(loadingNumbers + 1);
 		const items = getItemCountOnView();
-		const newItems = items * loadingNumbers;
+		const newItems = picturesParams.length + items;
+		console.log(items);
+		console.log(newItems);
 
 		if (newItems < galleryItemCountProp) {
 			setItemsLoadingCount(newItems);
 		} else {
 			setItemsLoadingCount(galleryItemCountProp);
+			setButton(false);
 		}
 	};
 
@@ -241,7 +245,7 @@ const Gallery = ({
 		</Box>
 		  
         
-		<Button {...override(`Button More`, `Button More${isButton ? ':on' : ':off'}`)} onClick={loadMore}>
+		<Button onClick={e => loadMore(e)} {...override(`Button More`, `Button More${isButton ? ':on' : ':off'}`)}>
 			          Загрузить еще
         
 		</Button>

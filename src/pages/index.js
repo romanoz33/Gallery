@@ -33,7 +33,7 @@ export default (() => {
 				offScrollProp
 				autoFillInProp
 				loaderFormatProp="По кнопке"
-				galleryItemCountProp="9"
+				galleryItemCountProp="15"
 				ratioFormatsProp="auto"
 				columnsCountProp="3"
 			>
