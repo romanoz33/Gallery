@@ -75,21 +75,18 @@ const Item = ({
 	imagesMaxWidthProp,
 	autoFillInProp,
 	loaderFormatProp,
-	// addRef,	
 	getVisibleSpace,
 	galleryItemCountProp,
 	columnsCountProp,
 	borderWidthProp,
 	getItemSize,
-	// getAPI,
 	...props
 }) => {
 	const {
 		override,
 		rest
 	} = useOverrides(props, overrides);
-	const [isLoading, setLoading] = useState(false); // const imageRef = useRef();  
-
+	const [isLoading, setLoading] = useState(false);
 	const boxRef = useRef(); // Функция для записи всех картинок в объект
 
 	addPictureParams(index, {
@@ -187,9 +184,9 @@ const Item = ({
 		<Image
 			onClick={e => openGalleryItem(e)}
 			max-width='100%'
-			max-height='100%'
-			width={getItemSize}
-			height={getItemSize}
+			max-height='100%' // width={getItemSize}  
+			// height={getItemSize} 
+
 			min-width={imagesAutoResizeProp ? '100%' : 'auto'}
 			min-height={imagesAutoResizeProp ? '100%' : 'auto'}
 			object-fit={imagesAutoResizeProp ? 'cover' : objectFitPreview}
@@ -204,10 +201,8 @@ const Item = ({
 		 
 			 
 		<Loader {...override('Loader', `Loader:${isLoading ? 'off' : 'on'}`)} />
-		 
 	</Box>;
-}; //
-
+};
 
 const propInfo = {
 	columsCountProp: {

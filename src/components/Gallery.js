@@ -145,14 +145,34 @@ const Gallery = ({
 
 	useEffect(() => {
 		const items = getItemCountOnView();
-		setItemsLoadingCount(items);
+		const {
+			mode,
+			projectType
+		} = getAPI();
+
+		if (mode === 'development') {
+			if (loaderFormatProp === 'Все сразу' || loaderFormatProp === 'При скроле') {
+				setItemsLoadingCount(galleryItemCountProp);
+			} else {
+				setItemsLoadingCount(items);
+			}
+		} else {// if ()
+		}
+
+		console.log(mode); // setItemsLoadingCount(items);    
+
 		if (items == galleryItemCountProp) setButton(false);
 	}, [galleryItemCountProp, columnsCountProp, borderWidthProp]); // Функция дозагрузки по клику
 
 	const loadMore = e => {
-		// setLoadingNumbers(loadingNumbers + 1);
+		const {
+			mode,
+			projectType
+		} = getAPI(); // setLoadingNumbers(loadingNumbers + 1);
+
 		const items = getItemCountOnView();
 		const newItems = picturesParams.length + items;
+		console.log(mode);
 		console.log(items);
 		console.log(newItems);
 
