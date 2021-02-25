@@ -112,8 +112,10 @@ const Gallery = ({
 	const [ratioSizes, setRatioSizes] = useState({}); // Кол-во изображений, которые нужно загружать
 
 	const [itemsLoadingCount, setItemsLoadingCount] = useState(); // Получаем ширину ячейки 
-	// const getItemSize = window.innerWidth / columnsCountProp - ((columnsCountProp - 1) * borderWidthProp);
-	// Получаем количество картинок, котороые помещаются в видимую область
+
+	const getItemSize = () => {
+		return window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp;
+	}; // Получаем количество картинок, котороые помещаются в видимую область
 	// const getItemCountOnView = () => {
 	//   const { mode, projectType } = getAPI(); 
 	//   if (mode === 'development') return parseInt(galleryItemCountProp);
@@ -132,6 +134,7 @@ const Gallery = ({
 	//   console.log(itemss)  
 	//   console.log(itemsLoadingCount)    
 	// }, []);   
+
 
 	useEffect(() => {
 		setScrollStatus(offScrollProp);
@@ -184,8 +187,8 @@ const Gallery = ({
 		getVisibleSpace={getVisibleSpace}
 		galleryItemCountProp={galleryItemCountProp}
 		columnsCountProp={columnsCountProp}
-		borderWidthProp={borderWidthProp} // getItemSize={getItemSize}
-		// getAPI={getAPI}
+		borderWidthProp={borderWidthProp}
+		getItemSize={getItemSize} // getAPI={getAPI}
 		// addRef={addRef} 
 
 	/>);

@@ -80,7 +80,7 @@ const Item = ({
 	galleryItemCountProp,
 	columnsCountProp,
 	borderWidthProp,
-	// getItemSize,
+	getItemSize,
 	// getAPI,
 	...props
 }) => {
