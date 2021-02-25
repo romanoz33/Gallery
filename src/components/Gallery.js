@@ -53,12 +53,7 @@ const changeStrInNumber = str => {
 	}
 
 	return `${newStr}`;
-}; // // Собираем и храним все ref картинок
-// const allRef = [];
-// const addRef = (index, ref) => {
-//   allRef[index] = ref;
-// }   
-// Собираем и храним все пропсы по картинкам
+}; // Собираем и храним все пропсы по картинкам
 
 
 const picturesParams = [];
@@ -114,7 +109,18 @@ const Gallery = ({
 	const [scrollStatus, setScrollStatus] = useState(offScrollProp);
 	const [ratioSizes, setRatioSizes] = useState({}); // Кол-во изображений, которые нужно загружать
 
-	const [itemsLoadingCount, setItemsLoadingCount] = useState(); // Получаем ширину ячейки 
+	const [isButton, setIsButton] = useState();
+	useEffect(() => {
+		if (loaderFormatProp === 'По кнопке') {
+			setIsButton(true);
+		} else {
+			setIsButton(false);
+		}
+	}, [loaderFormatProp]); // Кол-во изображений, которые нужно загружать
+
+	const [itemsLoadingCount, setItemsLoadingCount] = useState(); // Кол-во дозагрузок
+
+	const [loadingNumbers, setLoadingNumbers] = useState(1); // Получаем ширину ячейки 
 
 	const getItemSize = () => {
 		return window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp;
@@ -140,7 +146,14 @@ const Gallery = ({
 	useEffect(() => {
 		const items = getItemCountOnView();
 		setItemsLoadingCount(items);
-	}, []);
+	}, [galleryItemCountProp, columnsCountProp, borderWidthProp]);
+
+	const loadMore = () => {
+		setLoadingNumbers(loadingNumbers + 1);
+		const items = getItemCountOnView();
+		setItemsLoadingCount(items * loadingNumbers);
+	};
+
 	useEffect(() => {
 		setScrollStatus(offScrollProp);
 	}, [offScrollProp]); // useEffect(() => {  
@@ -193,8 +206,7 @@ const Gallery = ({
 		galleryItemCountProp={galleryItemCountProp}
 		columnsCountProp={columnsCountProp}
 		borderWidthProp={borderWidthProp}
-		getItemSize={getItemSize} // getAPI={getAPI}
-
+		getItemSize={getItemSize}
 	/>);
 	return <Box {...rest}>
 		      
@@ -223,8 +235,8 @@ const Gallery = ({
 		</Box>
 		  
         
-		<Button {...override(`Button More`, `Button More${loaderFormatProp === 'По кнопке' ? ':on' : ':off'}`)}>
-			          // Загрузить еще
+		<Button {...override(`Button More`, `Button More${isButton ? ':on' : ':off'}`)} onClick={loadMore}>
+			          Загрузить еще
         
 		</Button>
 		       
