@@ -109,19 +109,6 @@ const Item = ({
 	}, [showImageProp, selectdIndex]);
 	useEffect(() => {
 		loadImage(srcPreview).then(img => {
-			const {
-				mode,
-				projectType
-			} = getAPI(); // console.log(galleryRef)
-
-			if (mode === 'development') {
-				setLoading(true);
-			} else {
-				if (checkOnView()) {
-					console.log('true');
-				}
-			}
-
 			setLoading(true);
 		});
 	}, []); // const openGalleryItem = useCallback((e) => {		
