@@ -120,12 +120,9 @@ const Gallery = ({
 	const getItemSize = window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp; // Получаем количество картинок, котороые помещаются в видимую область
 
 	const getItemCountOnView = () => {
-		const {
-			mode,
-			projectType
-		} = getAPI();
-		if (mode === 'development') return parseInt(galleryItemCountProp); // Высота 1.5 окна
-
+		// const { mode, projectType } = getAPI(); 
+		// if (mode === 'development') return parseInt(galleryItemCountProp);
+		// Высота 1.5 окна
 		const visibleSpace = getVisibleSpace(); // Примерная ширина и высота картинки 
 
 		const itemWidth = window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp; // Кол-во рядов. Округляем в большую сторону
