@@ -114,32 +114,27 @@ const Gallery = ({
 	const [scrollStatus, setScrollStatus] = useState(offScrollProp);
 	const [ratioSizes, setRatioSizes] = useState({}); // Кол-во изображений, которые нужно загружать
 
-	const [itemsLoadingCount, setItemsLoadingCount] = useState();
-	const galleryRef = useRef(); // Получаем ширину ячейки 
+	const [itemsLoadingCount, setItemsLoadingCount] = useState(); // Получаем ширину ячейки 
 
 	const getItemSize = window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp; // Получаем количество картинок, котороые помещаются в видимую область
-
-	const getItemCountOnView = () => {
-		const {
-			mode,
-			projectType
-		} = getAPI();
-		if (mode === 'development') return parseInt(galleryItemCountProp); // Высота 1.5 окна
-
-		const visibleSpace = getVisibleSpace(); // Примерная ширина и высота картинки 
-
-		const itemWidth = window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp; // Кол-во рядов. Округляем в большую сторону
-
-		const visibleRows = Math.ceil(visibleSpace / itemWidth); // Возвращаем кол-во изображений
-
-		return visibleRows * columnsCountProp;
-	}; // useEffect(() => {    
+	// const getItemCountOnView = () => {
+	//   const { mode, projectType } = getAPI(); 
+	//   if (mode === 'development') return parseInt(galleryItemCountProp);
+	//   // Высота 1.5 окна
+	//   const visibleSpace = getVisibleSpace();
+	//   // Примерная ширина и высота картинки 
+	//   const itemWidth = window.innerWidth / columnsCountProp - ((columnsCountProp - 1) * borderWidthProp);
+	//   // Кол-во рядов. Округляем в большую сторону
+	//   const visibleRows = Math.ceil(visibleSpace / itemWidth);
+	//   // Возвращаем кол-во изображений
+	//   return visibleRows * columnsCountProp;    
+	// } 
+	// useEffect(() => {    
 	//   const itemss = getItemCountOnView();
 	//   setItemsLoadingCount(itemss); 
 	//   console.log(itemss)  
 	//   console.log(itemsLoadingCount)    
 	// }, []);   
-
 
 	useEffect(() => {
 		setScrollStatus(offScrollProp);
@@ -194,35 +189,28 @@ const Gallery = ({
 		columnsCountProp={columnsCountProp}
 		borderWidthProp={borderWidthProp}
 		getItemSize={getItemSize}
-		getAPI={getAPI}
-		galleryRef={galleryRef} // addRef={addRef} 
+		getAPI={getAPI} // addRef={addRef} 
 
 	/>);
 	return <Box {...rest}>
 		      
-		<Box
-			ref={galleryRef}
-			display='grid'
-			grid-gap={`${changeStrInNumber(borderWidthProp)}`}
-			grid-auto-flow={autoFillInProp ? 'dense' : 'row'}
-			grid-template-columns={`repeat(${columnsCountProp}, 
+		<Box display='grid' grid-gap={`${changeStrInNumber(borderWidthProp)}`} grid-auto-flow={autoFillInProp ? 'dense' : 'row'} grid-template-columns={`repeat(${columnsCountProp}, 
           minmax(${changeStrInNumber(imagesMinWidthProp)}, 
           ${changeStrInNumber(imagesMaxWidthProp)}))`} // lg-grid-template-columns={
-			//   `repeat(${lgColumnsCountProp}, 
-			//   minmax(${changeStrInNumber(imagesMinWidthProp)}, 
-			//   ${changeStrInNumber(imagesMaxWidthProp)}))`
-			// }
-			// md-grid-template-columns={
-			//   `repeat(${mdColumnsCountProp}, 
-			//   minmax(${changeStrInNumber(imagesMinWidthProp)},  
-			//   ${changeStrInNumber(imagesMaxWidthProp)}))`
-			// }
-			// sm-grid-template-columns={
-			//   `repeat(${smColumnsCountProp}, 
-			//   minmax(${changeStrInNumber(imagesMinWidthProp)}, 
-			//   ${changeStrInNumber(imagesMaxWidthProp)}))`
-			// }
-
+		//   `repeat(${lgColumnsCountProp}, 
+		//   minmax(${changeStrInNumber(imagesMinWidthProp)}, 
+		//   ${changeStrInNumber(imagesMaxWidthProp)}))`
+		// }
+		// md-grid-template-columns={
+		//   `repeat(${mdColumnsCountProp}, 
+		//   minmax(${changeStrInNumber(imagesMinWidthProp)},  
+		//   ${changeStrInNumber(imagesMaxWidthProp)}))`
+		// }
+		// sm-grid-template-columns={
+		//   `repeat(${smColumnsCountProp}, 
+		//   minmax(${changeStrInNumber(imagesMinWidthProp)}, 
+		//   ${changeStrInNumber(imagesMaxWidthProp)}))`
+		// }
 		>
 			        
 			{items}
@@ -231,9 +219,8 @@ const Gallery = ({
 		</Box>
 		  
         
-		<Button {...override(`Button More`, `Button More${loaderFormatProp === 'По кнопке' ? ':on' : ':off'}`)} // onClick={} 
-		>
-			          Загрузить еще
+		<Button {...override(`Button More`, `Button More${loaderFormatProp === 'По кнопке' ? ':on' : ':off'}`)}>
+			          // Загрузить еще
         
 		</Button>
 		       

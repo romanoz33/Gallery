@@ -82,7 +82,6 @@ const Item = ({
 	borderWidthProp,
 	getItemSize,
 	getAPI,
-	galleryRef,
 	...props
 }) => {
 	const {
