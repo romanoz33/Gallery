@@ -189,8 +189,8 @@ const Item = ({
 			onClick={e => openGalleryItem(e)}
 			max-width='100%'
 			max-height='100%'
-			width={getItemSize()}
-			height={getItemSize()}
+			width={getItemSize}
+			height={getItemSize}
 			min-width={imagesAutoResizeProp ? '100%' : 'auto'}
 			min-height={imagesAutoResizeProp ? '100%' : 'auto'}
 			object-fit={imagesAutoResizeProp ? 'cover' : objectFitPreview}
