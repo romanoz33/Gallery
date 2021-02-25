@@ -132,14 +132,14 @@ const Gallery = ({
 
 		const visibleRows = Math.ceil(visibleSpace / getItemSize()); // Возвращаем кол-во изображений
 
-		return visibleRows * columnsCountProp;
+		const items = visibleRows * columnsCountProp;
+		if (items > galleryItemCountProp) return parseInt(galleryItemCountProp);
+		return items;
 	};
 
 	useEffect(() => {
-		const itemss = getItemCountOnView();
-		setItemsLoadingCount(itemss);
-		console.log(itemss);
-		console.log(itemsLoadingCount);
+		const items = getItemCountOnView();
+		setItemsLoadingCount(items);
 	}, []);
 	useEffect(() => {
 		setScrollStatus(offScrollProp);

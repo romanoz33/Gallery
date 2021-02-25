@@ -110,24 +110,23 @@ const Item = ({
 		loadImage(srcPreview).then(img => {
 			setLoading(true);
 		});
-	}, []); // const openGalleryItem = useCallback((e) => {		
-	// 	loadImage(srcFull)  
-	// 	.then(img => {
-	// 		setIndex(index);
-	// 		setBigImage(false);
-	// 		setOpen(true);
-	// 		if (scrollStatus) scroll.disable();
-	// 		if (img.width > window.innerWidth) setBigImage(true);
-	// 	}); 
-	// 	window.addEventListener('keydown', (e) => {
-	// 		if (e.keyCode === 27) { 
-	// 			setOpen(false);  
-	// 			setZoom(false);
-	// 			if (scrollStatus) scroll.enable();
-	// 		} 
-	// 	});	 
-	// }, [isOpen, index, isBigImage, scrollStatus]); 
-
+	}, []);
+	const openGalleryItem = useCallback(e => {
+		loadImage(srcFull).then(img => {
+			setIndex(index);
+			setBigImage(false);
+			setOpen(true);
+			if (scrollStatus) scroll.disable();
+			if (img.width > window.innerWidth) setBigImage(true);
+		});
+		window.addEventListener('keydown', e => {
+			if (e.keyCode === 27) {
+				setOpen(false);
+				setZoom(false);
+				if (scrollStatus) scroll.enable();
+			}
+		});
+	}, [isOpen, index, isBigImage, scrollStatus]);
 	const changeFormat = useCallback((format, sizes) => {
 		const params = {
 			width: sizes.width,
