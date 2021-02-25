@@ -81,7 +81,7 @@ const Item = ({
 	columnsCountProp,
 	borderWidthProp,
 	getItemSize,
-	getAPI,
+	// getAPI,
 	...props
 }) => {
 	const {

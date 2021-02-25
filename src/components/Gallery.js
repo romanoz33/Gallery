@@ -74,19 +74,16 @@ const addPictureParams = (index, data) => {
 		'objectPosition': data.objectPositionFull,
 		'loading': data.loadingFull
 	};
-};
+}; // const getAPI = () => {
+//   if (typeof window !== "undefined") {
+//     return window.QAPI || {};
+//   }
+//   if (typeof global !== "undefined") {
+//     return global.QAPI || {};
+//   }
+//   return {};
+// }; 
 
-const getAPI = () => {
-	if (typeof window !== "undefined") {
-		return window.QAPI || {};
-	}
-
-	if (typeof global !== "undefined") {
-		return global.QAPI || {};
-	}
-
-	return {};
-};
 
 const getVisibleSpace = () => {
 	return window.innerHeight * windowHeightSize;
@@ -188,8 +185,8 @@ const Gallery = ({
 		galleryItemCountProp={galleryItemCountProp}
 		columnsCountProp={columnsCountProp}
 		borderWidthProp={borderWidthProp}
-		getItemSize={getItemSize}
-		getAPI={getAPI} // addRef={addRef} 
+		getItemSize={getItemSize} // getAPI={getAPI}
+		// addRef={addRef} 
 
 	/>);
 	return <Box {...rest}>
