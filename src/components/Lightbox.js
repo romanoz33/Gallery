@@ -99,7 +99,7 @@ const Lightbox = ({
 	isBigImage,
 	isZoom,
 	setZoom,
-	scrollStatus,
+	offScrollProp,
 	...props
 }) => {
 	useEffect(() => {// В случае, когда отключаем Lighbox с помощью пропса, убираем блокировку скрола
@@ -108,8 +108,8 @@ const Lightbox = ({
 	const closeLightbox = useCallback(() => {
 		setOpen(false);
 		setZoom(false);
-		if (scrollStatus) scroll.enable();
-	}, [scrollStatus, isOpen]);
+		if (offScrollProp) scroll.enable();
+	}, [offScrollProp, isOpen]);
 	const zoomImage = useCallback(e => {
 		stopEventClick(e);
 		setZoom(!isZoom);

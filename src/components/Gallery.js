@@ -99,20 +99,30 @@ const Gallery = ({
 }) => {
 	const galleryRef = useRef();
 	const [isOpen, setOpen] = useState(false);
-	const [selectdIndex, setIndex] = useState(0);
 	const [isBigImage, setBigImage] = useState(false);
-	const [isZoom, setZoom] = useState(false);
-	const [scrollStatus, setScrollStatus] = useState(offScrollProp);
-	const [ratioSizes, setRatioSizes] = useState({}); // Статус кнопки
+	const [isZoom, setZoom] = useState(false); // const [offScrollProp, setScrollStatus] = useState(offScrollProp);
+	// Храним Размеры выбранного соотношения сторон
 
-	const [isButton, setButton] = useState(); // Кол-во изображений, которые нужно загружать изначально
+	const [ratioSizes, setRatioSizes] = useState({}); // Храним индекс нажатой картинки 
 
-	const [itemsLoadingCount, setItemsLoadingCount] = useState(); // Получаем примерную ширину ячейки 
+	const [selectdIndex, setIndex] = useState(0); // Статус кнопки дозагрузки
 
-	const getItemSize = () => {
+	const [isButton, setButton] = useState(); // Кол-во изображений, которые нужно загружать
+
+	const [itemsLoadingCount, setItemsLoadingCount] = useState(); // Условие, чтобы количество Item было не меньше 0.
+	// Иначе получаем ошибку при переборе массива
+
+	useEffect(() => {
+		if (galleryItemCountProp > 0) {
+			galleryItemCountProp = parseInt(galleryItemCountProp);
+		} else {
+			galleryItemCountProp = 0;
+		}
+	}, [galleryItemCountProp]); // Получаем ширину ячейки 
+
+	const getItemSize = useCallback(() => {
 		return window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp;
-	}; // Получаем количество картинок, котороые помещаются в видимую область
-
+	}, [borderWidthProp, columnsCountProp]); // Получаем количество картинок, котороые помещаются в видимую область
 
 	const getItemCountOnView = useCallback(() => {
 		// Высота 1.5 окна
@@ -123,30 +133,19 @@ const Gallery = ({
 		const items = visibleRows * columnsCountProp;
 		if (items > galleryItemCountProp) return parseInt(galleryItemCountProp);
 		return items;
-	}, [galleryItemCountProp, columnsCountProp, borderWidthProp, loaderFormatProp, ratioFormatsProp, autoFillInProp, imagesMaxWidthProp, imagesMinWidthProp]); // Условие, чтобы количество Item было не меньше 0.
-	// Иначе получаем ошибку при переборе массива
+	}, [galleryItemCountProp, columnsCountProp, borderWidthProp, loaderFormatProp, ratioFormatsProp, autoFillInProp, imagesMaxWidthProp, imagesMinWidthProp]); // Функция дозагрузки по клику
 
-	if (galleryItemCountProp > 0) {
-		galleryItemCountProp = parseInt(galleryItemCountProp);
-	} else {
-		galleryItemCountProp = 0;
-	}
-
-	useEffect(() => {
-		setScrollStatus(offScrollProp);
-	}, [offScrollProp]); // Функция дозагрузки по клику
-
-	const loadMore = () => {
+	const loadMore = useCallback(() => {
 		const items = getItemCountOnView();
 		const newItems = picturesParams.length + items;
 
 		if (newItems < galleryItemCountProp) {
 			setItemsLoadingCount(newItems);
 		} else {
-			setItemsLoadingCount(galleryItemCountProp);
+			setItemsLoadingCount(parseInt(galleryItemCountProp));
 			setButton(false);
 		}
-	};
+	}, [picturesParams.length, galleryItemCountProp]);
 
 	const loadingOnScroll = () => {
 		const gallerySizes = galleryRef.current.getBoundingClientRect();
@@ -188,12 +187,7 @@ const Gallery = ({
 			;
 
 			if (loaderFormatProp === 'По кнопке') {
-				setItemsLoadingCount(items); // if (items == galleryItemCountProp) {
-				//   setButton(false);  
-				// } else {
-				//   setButton(true);
-				// }
-
+				setItemsLoadingCount(items);
 				if (items == galleryItemCountProp) setButton(false);
 			}
 
@@ -218,22 +212,17 @@ const Gallery = ({
 		isOpen={isOpen}
 		setOpen={setOpen}
 		setIndex={setIndex}
-		selectdIndex={selectdIndex}
 		setBigImage={setBigImage}
-		isBigImage={isBigImage}
+		offScrollProp={offScrollProp}
 		setZoom={setZoom}
-		scrollStatus={scrollStatus}
 		ratioSizes={ratioSizes}
 		setRatioSizes={setRatioSizes}
 		ratioFormatsProp={ratioFormatsProp}
 		imagesMinWidthProp={imagesMinWidthProp}
 		imagesMaxWidthProp={imagesMaxWidthProp}
 		autoFillInProp={autoFillInProp}
-		loaderFormatProp={loaderFormatProp}
-		galleryItemCountProp={galleryItemCountProp}
 		columnsCountProp={columnsCountProp}
 		borderWidthProp={borderWidthProp}
-		getItemSize={getItemSize}
 	/>);
 	return <Box {...rest}>
 		      
@@ -283,7 +272,7 @@ const Gallery = ({
 			isBigImage={isBigImage}
 			isZoom={isZoom}
 			setZoom={setZoom}
-			scrollStatus={scrollStatus}
+			offScrollProp={offScrollProp}
 		/>
 		  
     

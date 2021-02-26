@@ -69,10 +69,10 @@ export default (() => {
 			{" "}
 			<Box height="100px" />
 			<Components.Gallery
-				offScrollProp
+				offScrollProp={false}
 				autoFillInProp
-				loaderFormatProp="При скроле"
-				galleryItemCountProp="19"
+				loaderFormatProp="По кнопке"
+				galleryItemCountProp="18"
 				ratioFormatsProp="1:1"
 				columnsCountProp="3"
 			>

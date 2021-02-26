@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useOverrides } from '@quarkly/components';
-import { Box, Image, Icon } from '@quarkly/widgets';
+import { Box, Image } from '@quarkly/widgets';
 import scroll from './Scrollblock';
 import Loader from './Loader';
 import { AiOutlineLoading } from "react-icons/ai";
@@ -63,22 +63,17 @@ const Item = ({
 	isOpen,
 	setOpen,
 	setIndex,
-	selectdIndex,
 	setBigImage,
-	isBigImage,
+	offScrollProp,
 	setZoom,
-	scrollStatus,
 	ratioSizes,
 	setRatioSizes,
 	ratioFormatsProp,
 	imagesMinWidthProp,
 	imagesMaxWidthProp,
 	autoFillInProp,
-	loaderFormatProp,
-	galleryItemCountProp,
 	columnsCountProp,
 	borderWidthProp,
-	getItemSize,
 	...props
 }) => {
 	const {
@@ -86,7 +81,7 @@ const Item = ({
 		rest
 	} = useOverrides(props, overrides);
 	const [isLoading, setLoading] = useState(false);
-	const boxRef = useRef(); // Функция для записи всех картинок в объект
+	const boxRef = useRef(); // Функция для записи всех данных картинок в объект
 
 	addPictureParams(index, {
 		srcFull,
@@ -99,9 +94,8 @@ const Item = ({
 		loadingFull
 	});
 	useEffect(() => {
-		setOpen(showImageProp);
-		setIndex(selectdIndex);
-	}, [showImageProp, selectdIndex]);
+		if (!isOpen) scroll.enable();
+	}, [isOpen]);
 	useEffect(() => {
 		loadImage(srcPreview).then(img => {
 			setLoading(true);
@@ -112,17 +106,17 @@ const Item = ({
 			setIndex(index);
 			setBigImage(false);
 			setOpen(true);
-			if (scrollStatus) scroll.disable();
+			if (offScrollProp) scroll.disable();
 			if (img.width > window.innerWidth) setBigImage(true);
 		});
 		window.addEventListener('keydown', e => {
 			if (e.keyCode === 27) {
 				setOpen(false);
 				setZoom(false);
-				if (scrollStatus) scroll.enable();
+				if (offScrollProp) scroll.enable();
 			}
 		});
-	}, [isOpen, index, isBigImage, scrollStatus]);
+	}, [isOpen, offScrollProp]);
 	const changeFormat = useCallback((format, sizes) => {
 		const params = {
 			width: sizes.width,
@@ -183,9 +177,7 @@ const Item = ({
 		<Image
 			onClick={e => openGalleryItem(e)}
 			max-width='100%'
-			max-height='100%' // width={getItemSize}  
-			// height={getItemSize} 
-
+			max-height='100%'
 			min-width={imagesAutoResizeProp ? '100%' : 'auto'}
 			min-height={imagesAutoResizeProp ? '100%' : 'auto'}
 			object-fit={imagesAutoResizeProp ? 'cover' : objectFitPreview}
@@ -193,8 +185,9 @@ const Item = ({
 			sizes={sizesPreview}
 			title={titlePreview}
 			object-position={objectPositionPreview}
-			alt={altPreview ? altPreview : ''}
-			src={isLoading ? srcPreview : ''}
+			alt={altPreview}
+			src={isLoading ? srcPreview || srcSetPreview : ''}
+			opacity={isLoading ? '1' : '0'}
 			{...ratioSizes}
 		/>
 		 
