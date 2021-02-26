@@ -149,13 +149,11 @@ const Gallery = ({
 	};
 
 	const loadingOnScroll = () => {
-		const scrollTop = window.scrollY;
 		const gallerySizes = galleryRef.current.getBoundingClientRect();
-		console.log(gallerySizes.top);
-		console.log(scrollTop);
-		console.log(gallerySizes.height); // console.log(gallerySizes.top + scrollTop > gallerySizes.height / 3) 
-		// if (gallerySizes.top + scrollTop > gallerySizes.height / 3) {
-		// } 
+
+		if (gallerySizes.bottom - window.innerHeight / 2 < window.innerHeight) {
+			loadMore();
+		}
 	};
 
 	useEffect(() => {
@@ -163,43 +161,51 @@ const Gallery = ({
 		const {
 			mode,
 			projectType
-		} = getAPI(); // if (mode === 'development') {
-		//   if (loaderFormatProp === 'Все сразу' || loaderFormatProp === 'При скроле'){
-		//     setItemsLoadingCount(galleryItemCountProp);
-		//   } 
-		//   else if (loaderFormatProp === 'По кнопке') {
-		//     setItemsLoadingCount(items);
-		//     if (items == galleryItemCountProp) {
-		//       setButton(false);
-		//     } else {
-		//       setButton(true);
-		//     }
-		//   }
-		// } else if(mode === 'production'){ 
+		} = getAPI();
 
-		if (loaderFormatProp === 'Все сразу') setItemsLoadingCount(galleryItemCountProp);
+		if (mode === 'development') {
+			if (loaderFormatProp === 'Все сразу' || loaderFormatProp === 'При скроле') {
+				setItemsLoadingCount(galleryItemCountProp);
+			} else if (loaderFormatProp === 'По кнопке') {
+				setItemsLoadingCount(items);
 
-		if (loaderFormatProp === 'При скроле') {
-			window.addEventListener('scroll', loadingOnScroll);
-			window.addEventListener('resize', loadingOnScroll);
-			window.addEventListener('orientationchange', loadingOnScroll);
-			setItemsLoadingCount(items);
+				if (items == galleryItemCountProp) {
+					setButton(false);
+				} else {
+					setButton(true);
+				}
+			}
+		} else if (mode === 'production') {
+			if (loaderFormatProp === 'Все сразу') setItemsLoadingCount(galleryItemCountProp);
+
+			if (loaderFormatProp === 'При скроле') {
+				window.addEventListener('scroll', loadingOnScroll);
+				window.addEventListener('resize', loadingOnScroll);
+				window.addEventListener('orientationchange', loadingOnScroll);
+				setItemsLoadingCount(items);
+			}
+
+			;
+
+			if (loaderFormatProp === 'По кнопке') {
+				setItemsLoadingCount(items); // if (items == galleryItemCountProp) {
+				//   setButton(false);  
+				// } else {
+				//   setButton(true);
+				// }
+
+				if (items == galleryItemCountProp) setButton(false);
+			}
+
+			;
 		}
 
 		;
-
-		if (loaderFormatProp === 'По кнопке') {
-			setItemsLoadingCount(items);
-
-			if (items == galleryItemCountProp) {
-				setButton(false);
-			} else {
-				setButton(true);
-			} // if (items == galleryItemCountProp) setButton(false);
-
-		}
-
-		; // }  
+		return function () {
+			window.removeEventListener('scroll', loadingOnScroll);
+			window.removeEventListener('resize', loadingOnScroll);
+			window.removeEventListener('orientationchange', loadingOnScroll);
+		};
 	}, [galleryItemCountProp, columnsCountProp, borderWidthProp, loaderFormatProp, ratioFormatsProp, autoFillInProp, imagesMaxWidthProp, imagesMinWidthProp]);
 	const {
 		override,
