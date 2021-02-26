@@ -1,9 +1,8 @@
-import React, { useMemo, useState, useEffect, useRef } from 'react';
+import React, { useMemo, useCallback, useState, useEffect, useRef } from 'react';
 import { useOverrides } from '@quarkly/components';
 import { Box, Button } from '@quarkly/widgets';
 import Item from './Item';
 import Lightbox from './Lightbox';
-const rowsCountLoader = 2;
 const windowHeightSize = 1.5;
 const overrides = {
 	'Wrapper': {
@@ -83,10 +82,6 @@ const getAPI = () => {
 	return {};
 };
 
-const getVisibleSpace = () => {
-	return window.innerHeight * windowHeightSize;
-};
-
 const Gallery = ({
 	galleryItemCountProp,
 	columnsCountProp,
@@ -102,6 +97,7 @@ const Gallery = ({
 	offScrollProp,
 	...props
 }) => {
+	const galleryRef = useRef();
 	const [isOpen, setOpen] = useState(false);
 	const [selectdIndex, setIndex] = useState(0);
 	const [isBigImage, setBigImage] = useState(false);
@@ -109,72 +105,40 @@ const Gallery = ({
 	const [scrollStatus, setScrollStatus] = useState(offScrollProp);
 	const [ratioSizes, setRatioSizes] = useState({}); // Статус кнопки
 
-	const [isButton, setButton] = useState();
-	useEffect(() => {
-		if (loaderFormatProp === 'По кнопке') {
-			setButton(true);
-		} else {
-			setButton(false);
-		}
-	}, [loaderFormatProp]); // Кол-во изображений, которые нужно загружать изначально
+	const [isButton, setButton] = useState(); // Кол-во изображений, которые нужно загружать изначально
 
-	const [itemsLoadingCount, setItemsLoadingCount] = useState(); // Кол-во рядов дозагрузок
-
-	const [loadingNumbers, setLoadingNumbers] = useState(2); // Получаем примерную ширину ячейки 
+	const [itemsLoadingCount, setItemsLoadingCount] = useState(); // Получаем примерную ширину ячейки 
 
 	const getItemSize = () => {
 		return window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp;
 	}; // Получаем количество картинок, котороые помещаются в видимую область
 
 
-	const getItemCountOnView = () => {
-		const {
-			mode,
-			projectType
-		} = getAPI(); // if (mode === 'development') return parseInt(galleryItemCountProp);
+	const getItemCountOnView = useCallback(() => {
 		// Высота 1.5 окна
-
-		const visibleSpace = getVisibleSpace(); // Кол-во рядов. Округляем в большую сторону
+		const visibleSpace = window.innerHeight * windowHeightSize; // Кол-во рядов. Округляем в большую сторону 
 
 		const visibleRows = Math.ceil(visibleSpace / getItemSize()); // Возвращаем кол-во изображений
 
 		const items = visibleRows * columnsCountProp;
 		if (items > galleryItemCountProp) return parseInt(galleryItemCountProp);
 		return items;
-	};
+	}, [galleryItemCountProp, columnsCountProp, borderWidthProp, loaderFormatProp, ratioFormatsProp, autoFillInProp, imagesMaxWidthProp, imagesMinWidthProp]); // Условие, чтобы количество Item было не меньше 0.
+	// Иначе получаем ошибку при переборе массива
+
+	if (galleryItemCountProp > 0) {
+		galleryItemCountProp = parseInt(galleryItemCountProp);
+	} else {
+		galleryItemCountProp = 0;
+	}
 
 	useEffect(() => {
-		const items = getItemCountOnView();
-		const {
-			mode,
-			projectType
-		} = getAPI();
+		setScrollStatus(offScrollProp);
+	}, [offScrollProp]); // Функция дозагрузки по клику
 
-		if (mode === 'development') {
-			if (loaderFormatProp === 'Все сразу' || loaderFormatProp === 'При скроле') {
-				setItemsLoadingCount(galleryItemCountProp);
-			} else {
-				setItemsLoadingCount(items);
-			}
-		} else {// if ()
-		}
-
-		console.log(mode); // setItemsLoadingCount(items);    
-
-		if (items == galleryItemCountProp) setButton(false);
-	}, [galleryItemCountProp, columnsCountProp, borderWidthProp]); // Функция дозагрузки по клику
-
-	const loadMore = e => {
-		const {
-			mode,
-			projectType
-		} = getAPI(); // setLoadingNumbers(loadingNumbers + 1);
-
+	const loadMore = () => {
 		const items = getItemCountOnView();
 		const newItems = picturesParams.length + items;
-		console.log(mode);
-		console.log(items);
-		console.log(newItems);
 
 		if (newItems < galleryItemCountProp) {
 			setItemsLoadingCount(newItems);
@@ -184,31 +148,59 @@ const Gallery = ({
 		}
 	};
 
+	const loadingOnScroll = () => {
+		const scrollTop = window.scrollY;
+		const gallerySizes = galleryRef.current.getBoundingClientRect();
+		console.log(gallerySizes.top);
+		console.log(scrollTop);
+		console.log(gallerySizes.height); // console.log(gallerySizes.top + scrollTop > gallerySizes.height / 3) 
+		// if (gallerySizes.top + scrollTop > gallerySizes.height / 3) {
+		// } 
+	};
+
 	useEffect(() => {
-		setScrollStatus(offScrollProp);
-	}, [offScrollProp]); // useEffect(() => {  
-	//     switch (loaderFormatProp) { 
-	//   case 'Все сразу':
-	//     setSrcOnScroll();  
-	//     window.addEventListener('scroll', setSrcOnScroll); 
-	//     window.addEventListener('resize', setSrcOnScroll);
-	//     window.addEventListener('orientationchange', setSrcOnScroll);
-	//     break;
-	//   case 'При скроле': 
-	//     setSrcAlways();  
-	//     break;
-	//   default:
-	//   } 
-	// }, [loaderFormatProp]);   
-	// Условие, чтобы количество Item было не меньше 0.
-	// Иначе получаем ошибку при переборе массива
+		const items = getItemCountOnView();
+		const {
+			mode,
+			projectType
+		} = getAPI(); // if (mode === 'development') {
+		//   if (loaderFormatProp === 'Все сразу' || loaderFormatProp === 'При скроле'){
+		//     setItemsLoadingCount(galleryItemCountProp);
+		//   } 
+		//   else if (loaderFormatProp === 'По кнопке') {
+		//     setItemsLoadingCount(items);
+		//     if (items == galleryItemCountProp) {
+		//       setButton(false);
+		//     } else {
+		//       setButton(true);
+		//     }
+		//   }
+		// } else if(mode === 'production'){ 
 
-	if (galleryItemCountProp > 0) {
-		galleryItemCountProp = parseInt(galleryItemCountProp);
-	} else {
-		galleryItemCountProp = 0;
-	}
+		if (loaderFormatProp === 'Все сразу') setItemsLoadingCount(galleryItemCountProp);
 
+		if (loaderFormatProp === 'При скроле') {
+			window.addEventListener('scroll', loadingOnScroll);
+			window.addEventListener('resize', loadingOnScroll);
+			window.addEventListener('orientationchange', loadingOnScroll);
+			setItemsLoadingCount(items);
+		}
+
+		;
+
+		if (loaderFormatProp === 'По кнопке') {
+			setItemsLoadingCount(items);
+
+			if (items == galleryItemCountProp) {
+				setButton(false);
+			} else {
+				setButton(true);
+			} // if (items == galleryItemCountProp) setButton(false);
+
+		}
+
+		; // }  
+	}, [galleryItemCountProp, columnsCountProp, borderWidthProp, loaderFormatProp, ratioFormatsProp, autoFillInProp, imagesMaxWidthProp, imagesMinWidthProp]);
 	const {
 		override,
 		rest
@@ -232,7 +224,6 @@ const Gallery = ({
 		imagesMaxWidthProp={imagesMaxWidthProp}
 		autoFillInProp={autoFillInProp}
 		loaderFormatProp={loaderFormatProp}
-		getVisibleSpace={getVisibleSpace}
 		galleryItemCountProp={galleryItemCountProp}
 		columnsCountProp={columnsCountProp}
 		borderWidthProp={borderWidthProp}
@@ -240,23 +231,29 @@ const Gallery = ({
 	/>);
 	return <Box {...rest}>
 		      
-		<Box display='grid' grid-gap={`${changeStrInNumber(borderWidthProp)}`} grid-auto-flow={autoFillInProp ? 'dense' : 'row'} grid-template-columns={`repeat(${columnsCountProp}, 
+		<Box
+			ref={galleryRef}
+			display='grid'
+			grid-gap={`${changeStrInNumber(borderWidthProp)}`}
+			grid-auto-flow={autoFillInProp ? 'dense' : 'row'}
+			grid-template-columns={`repeat(${columnsCountProp}, 
           minmax(${changeStrInNumber(imagesMinWidthProp)}, 
           ${changeStrInNumber(imagesMaxWidthProp)}))`} // lg-grid-template-columns={
-		//   `repeat(${lgColumnsCountProp}, 
-		//   minmax(${changeStrInNumber(imagesMinWidthProp)}, 
-		//   ${changeStrInNumber(imagesMaxWidthProp)}))`
-		// }
-		// md-grid-template-columns={
-		//   `repeat(${mdColumnsCountProp}, 
-		//   minmax(${changeStrInNumber(imagesMinWidthProp)},  
-		//   ${changeStrInNumber(imagesMaxWidthProp)}))`
-		// }
-		// sm-grid-template-columns={
-		//   `repeat(${smColumnsCountProp}, 
-		//   minmax(${changeStrInNumber(imagesMinWidthProp)}, 
-		//   ${changeStrInNumber(imagesMaxWidthProp)}))`
-		// }
+			//   `repeat(${lgColumnsCountProp}, 
+			//   minmax(${changeStrInNumber(imagesMinWidthProp)}, 
+			//   ${changeStrInNumber(imagesMaxWidthProp)}))`
+			// }
+			// md-grid-template-columns={
+			//   `repeat(${mdColumnsCountProp}, 
+			//   minmax(${changeStrInNumber(imagesMinWidthProp)},  
+			//   ${changeStrInNumber(imagesMaxWidthProp)}))`
+			// }
+			// sm-grid-template-columns={
+			//   `repeat(${smColumnsCountProp}, 
+			//   minmax(${changeStrInNumber(imagesMinWidthProp)}, 
+			//   ${changeStrInNumber(imagesMaxWidthProp)}))`
+			// }
+
 		>
 			        
 			{items}

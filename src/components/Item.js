@@ -75,7 +75,6 @@ const Item = ({
 	imagesMaxWidthProp,
 	autoFillInProp,
 	loaderFormatProp,
-	getVisibleSpace,
 	galleryItemCountProp,
 	columnsCountProp,
 	borderWidthProp,
