@@ -32,7 +32,7 @@ export default (() => {
 			<Components.Gallery
 				offScrollProp={false}
 				autoFillInProp
-				loaderFormatProp="При скроле"
+				loaderFormatProp="По кнопке"
 				previewLoaderStatusProp={false}
 				ratioFormatsProp="1:1"
 				galleryItemCountProp="40"
