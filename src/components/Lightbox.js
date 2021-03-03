@@ -169,8 +169,8 @@ const Lightbox = ({
 				{...isZoom ? isBigImage && imageIsZoomIn : isBigImage && imageIsZoomOut}
 				{...isOpen ? imageIsOpen : imageIsClose}
 				src={isLoadingFullPic ? '' : somePictureParams.src || defaultFullSrc}
-				title={somePictureParams['title']}
-				alt={somePictureParams['alt']}
+				title={isLoadingFullPic ? '' : somePictureParams.title}
+				alt={isLoadingFullPic ? '' : somePictureParams.alt}
 				srcset={somePictureParams['srcset']}
 				sizes={somePictureParams['sizes']}
 				object-fit={somePictureParams['object-fit']}

@@ -30,7 +30,7 @@ export default (() => {
 			{" \n\t \n\t "}
 			<Box height="100px" />
 			<Components.Gallery
-				offScrollProp={false}
+				offScrollProp
 				autoFillInProp
 				loaderFormatProp="По кнопке"
 				previewLoaderStatusProp={false}
