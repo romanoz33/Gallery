@@ -9,13 +9,8 @@ const overrides = {
 	}
 };
 
-const loadImage = url => new Promise(resolve => {
-	const img = document.createElement('img');
-	img.addEventListener('load', () => resolve(img));
-	img.src = url;
-});
-
 const Item = ({
+	loadImage,
 	columsCountProp,
 	rowsCountProp,
 	imagesAutoResizeProp,
@@ -47,8 +42,8 @@ const Item = ({
 	galleryItemWidth,
 	ratioSizes,
 	setRatioSizes,
-	setLoadingFullPic,
 	setSomePictureParams,
+	setClicked,
 	ratioFormatsProp,
 	imagesMinWidthProp,
 	imagesMaxWidthProp,
@@ -88,32 +83,25 @@ const Item = ({
 		});
 	}, []);
 	const openGalleryItem = useCallback(() => {
-		setSomePictureParams({});
-		loadImage(srcFull || defaultFullSrc).then(img => {
-			setBigImage(false);
-			setOpen(true);
-			if (offScrollProp) scroll.disable();
-			if (img.width > window.innerWidth) setBigImage(true);
-			setLoadingFullPic(false);
-			setSomePictureParams({
-				'src': srcFull || defaultFullSrc,
-				'srcset': srcSetFull,
-				'sizes': sizesFull,
-				'alt': altFull,
-				'title': titleFull,
-				'object-position': objectFitFull,
-				'object-fit': objectPositionFull,
-				'loading': loadingFull
-			});
+		setSomePictureParams({
+			'src': srcFull || defaultFullSrc,
+			'srcset': srcSetFull,
+			'sizes': sizesFull,
+			'alt': altFull,
+			'title': titleFull,
+			'object-position': objectFitFull,
+			'object-fit': objectPositionFull,
+			'loading': loadingFull
 		});
-		window.addEventListener('keydown', e => {
-			if (e.keyCode === 27) {
-				setOpen(false);
-				setZoom(false);
-				if (offScrollProp) scroll.enable();
-			}
-		});
-	}, [isOpen, index, isBigImage, offScrollProp]);
+		setClicked(true); // window.addEventListener('keydown', (e) => {
+		// 	if (e.keyCode === 27) { 
+		// 		setOpen(false);  
+		// 		setZoom(false);
+		// 		if (offScrollProp) scroll.enable();
+		// 	} 
+		// });	 
+	}); // }, [isOpen, index, isBigImage, offScrollProp]); 
+
 	const changeFormat = useCallback((format, sizes) => {
 		const params = {
 			width: galleryItemWidth,

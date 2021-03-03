@@ -6,6 +6,13 @@ import Lightbox from './Lightbox';
 const windowHeightSize = 1.5;
 const defaultPreviewSrc = 'https://media.istockphoto.com/vectors/image-preview-icon-picture-placeholder-for-website-or-uiux-design-vector-id1222357475?k=6&m=1222357475&s=170667a&w=0&h=sCVQ6Qaut-zK8EdXE4s70nmmXRQeK8FmooCqvE32spQ=';
 const defaultFullSrc = 'http://placehold.it/800';
+
+const loadImage = url => new Promise(resolve => {
+	const img = document.createElement('img');
+	img.addEventListener('load', () => resolve(img));
+	img.src = url;
+});
+
 const overrides = {
 	'Wrapper': {
 		'kind': 'Box'
@@ -96,9 +103,9 @@ const Gallery = ({
 
 	const [isButtonVisible, setButtonVisible] = useState(loaderFormatProp === 'По кнопке'); // Кол-во изображений, которые нужно загружать
 
-	const [itemsLoadingCount, setItemsLoadingCount] = useState(); // Загружена ли полная картинка
+	const [itemsLoadingCount, setItemsLoadingCount] = useState(); // // Нажата та ли картинка
 
-	const [isLoadingFullPic, setLoadingFullPic] = useState(true); // Все параметры определенной картинки
+	const [clicked, setClicked] = useState(false); // Все параметры определенной картинки
 
 	const [somePictureParams, setSomePictureParams] = useState({}); // Размеры галереи
 
@@ -259,6 +266,7 @@ const Gallery = ({
 	const items = Array(itemsLoadingCount).fill().map((item, index) => <Item
 		{...override(`Item`, `Item ${index}`)}
 		key={`${rest['data-qid']}-item-${index}`}
+		loadImage={loadImage}
 		index={index}
 		addPictureParams={addPictureParams}
 		isOpen={isOpen}
@@ -269,8 +277,8 @@ const Gallery = ({
 		galleryItemWidth={galleryItemWidth}
 		ratioSizes={ratioSizes}
 		setRatioSizes={setRatioSizes}
-		setLoadingFullPic={setLoadingFullPic}
 		setSomePictureParams={setSomePictureParams}
+		setClicked={setClicked}
 		ratioFormatsProp={ratioFormatsProp}
 		imagesMinWidthProp={imagesMinWidthProp}
 		imagesMaxWidthProp={imagesMaxWidthProp}
@@ -315,14 +323,18 @@ const Gallery = ({
 		</Button>
 		<Lightbox
 			{...override(`Lightbox`)}
+			loadImage={loadImage}
 			somePictureParams={somePictureParams}
+			setSomePictureParams={setSomePictureParams}
 			isOpen={isOpen}
 			setOpen={setOpen}
 			isBigImage={isBigImage}
+			setBigImage={setBigImage}
 			isZoom={isZoom}
 			setZoom={setZoom}
 			offScrollProp={offScrollProp}
-			isLoadingFullPic={isLoadingFullPic}
+			clicked={clicked}
+			setClicked={setClicked}
 			defaultFullSrc={defaultFullSrc}
 			fullLoaderStatusProp={fullLoaderStatusProp}
 		/>

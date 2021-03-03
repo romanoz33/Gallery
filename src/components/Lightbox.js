@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useOverrides } from '@quarkly/components';
 import { Box, Icon, Image } from '@quarkly/widgets';
 import scroll from './Scrollblock';
@@ -95,25 +95,49 @@ const stopEventClick = e => {
 };
 
 const Lightbox = ({
+	loadImage,
 	somePictureParams,
+	setSomePictureParams,
 	isOpen,
 	setOpen,
 	isBigImage,
+	setBigImage,
 	isZoom,
 	setZoom,
 	offScrollProp,
-	isLoadingFullPic,
+	// isLoadingFullPic, 
+	// setLoadingFullPic,
 	defaultFullSrc,
 	fullLoaderStatusProp,
+	clicked,
+	setClicked,
 	...props
 }) => {
+	// Загружена ли полная картинка
+	const [isLoadingFullPic, setLoadingFullPic] = useState(true);
 	useEffect(() => {
 		// В случае, когда отключаем Lighbox с помощью пропса, убираем блокировку скрола
 		if (!isOpen) scroll.enable();
 	}, [isOpen]);
+	useEffect(() => {
+		// setSomePictureParams({});
+		if (clicked) {
+			setOpen(true);
+			loadImage(somePictureParams.src || defaultFullSrc).then(img => {
+				setBigImage(false);
+				if (offScrollProp) scroll.disable();
+				if (img.width > window.innerWidth) setBigImage(true);
+				setLoadingFullPic(false);
+			});
+		}
+	}); // }, [isOpen, clicked]);   
+
 	const closeLightbox = useCallback(() => {
+		setLoadingFullPic(true);
 		setOpen(false);
 		setZoom(false);
+		setClicked(false);
+		setSomePictureParams({});
 		if (offScrollProp) scroll.enable();
 	}, [offScrollProp, isOpen]);
 	const zoomImage = useCallback(e => {
