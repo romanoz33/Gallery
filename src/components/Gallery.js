@@ -105,7 +105,7 @@ const Gallery = ({
 
 	const [isButtonVisible, setButtonVisible] = useState(loaderFormatProp === 'По кнопке'); // Кол-во изображений, которые нужно загружать
 
-	const [itemsLoadingCount, setItemsLoadingCount] = useState(); // // Нажата та ли картинка
+	const [itemsLoadingCount, setItemsLoadingCount] = useState(); // Нажата та ли картинка
 
 	const [clicked, setClicked] = useState(false); // Все параметры определенной картинки
 
@@ -136,9 +136,7 @@ const Gallery = ({
 				lastRan.current = Date.now();
 			}
 		}, delay - (Date.now() - lastRan.current));
-		return () => {
-			clearTimeout(handler);
-		};
+		return () => clearTimeout(handler);
 	}; // Получаем ширину ячейки 
 
 
@@ -209,12 +207,9 @@ const Gallery = ({
 
 	const loadOnClick = () => {
 		const gallerySizes = galleryRef.current.getBoundingClientRect();
-		const items = getItemCountOnView(gallerySizes.width);
-		const newItems = items + items * clickLoadCountRef.current;
 
 		if (gallerySizes.bottom - window.innerHeight / 2 < window.innerHeight) {
 			loadMore('click');
-			console.log('click');
 		}
 	};
 
@@ -225,7 +220,6 @@ const Gallery = ({
 
 		if (gallerySizes.bottom - window.innerHeight / 2 < window.innerHeight) {
 			loadMore('scroll');
-			console.log('scroll');
 
 			if (newItems > galleryItemCountNumb) {
 				window.removeEventListener('scroll', loadOnScroll);
@@ -240,34 +234,35 @@ const Gallery = ({
 		const items = getItemCountOnView(gallerySizes.width);
 		const {
 			mode
-		} = getAPI(); // if (mode === 'development') {
-		// 	if (loaderFormatProp === 'Все сразу' || loaderFormatProp === 'При скроле') {
-		// 		setItemsLoadingCount(galleryItemCountNumb);
-		// 		setButtonVisible(false);
-		// 	} 
-		// 	else if (loaderFormatProp === 'По кнопке') {
-		// 		setItemsLoadingCount(items);
-		// 		setButtonVisible(items !== galleryItemCountNumb); 
-		// 	}
-		// }   
-		// else if (mode === 'production') {  
+		} = getAPI();
 
-		if (loaderFormatProp === 'Все сразу') {
-			setItemsLoadingCount(galleryItemCountNumb);
-			setButtonVisible(false);
-		} else if (loaderFormatProp === 'При скроле') {
-			window.addEventListener('scroll', loadOnScroll);
-			window.addEventListener('resize', loadOnScroll);
-			window.addEventListener('orientationchange', loadOnScroll);
-			setButtonVisible(false);
-			setItemsLoadingCount(items);
-		} else if (loaderFormatProp === 'По кнопке') {
-			setItemsLoadingCount(items);
-			setButtonVisible(items !== galleryItemCountNumb);
+		if (mode === 'development') {
+			if (loaderFormatProp === 'Все сразу' || loaderFormatProp === 'При скроле') {
+				setItemsLoadingCount(galleryItemCountNumb);
+				setButtonVisible(false);
+			} else if (loaderFormatProp === 'По кнопке') {
+				setItemsLoadingCount(items);
+				setButtonVisible(items !== galleryItemCountNumb);
+			}
+		} else if (mode === 'production') {
+			if (loaderFormatProp === 'Все сразу') {
+				setItemsLoadingCount(galleryItemCountNumb);
+				setButtonVisible(false);
+			} else if (loaderFormatProp === 'При скроле') {
+				window.addEventListener('scroll', loadOnScroll);
+				window.addEventListener('resize', loadOnScroll);
+				window.addEventListener('orientationchange', loadOnScroll);
+				setButtonVisible(false);
+				setItemsLoadingCount(items);
+			} else if (loaderFormatProp === 'По кнопке') {
+				setItemsLoadingCount(items);
+				setButtonVisible(items !== galleryItemCountNumb);
+			}
+
+			;
 		}
 
-		; // };
-
+		;
 		return () => {
 			window.removeEventListener('scroll', loadOnScroll);
 			window.removeEventListener('resize', loadOnScroll);
@@ -281,14 +276,10 @@ const Gallery = ({
 	const items = Array(itemsLoadingCount).fill().map((item, index) => <Item
 		{...override(`Item`, `Item ${index}`)}
 		key={`${rest['data-qid']}-item-${index}`}
-		loadImage={loadImage}
 		index={index}
+		loadImage={loadImage}
 		addPictureParams={addPictureParams}
-		isOpen={isOpen}
 		setOpen={setOpen}
-		setBigImage={setBigImage}
-		offScrollProp={offScrollProp}
-		setZoom={setZoom}
 		galleryItemWidth={galleryItemWidth}
 		ratioSizes={ratioSizes}
 		setRatioSizes={setRatioSizes}

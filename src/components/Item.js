@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useOverrides } from '@quarkly/components';
-import { Box, Image, Icon } from '@quarkly/widgets';
+import { Box, Image } from '@quarkly/widgets';
 import Loader from './Loader';
 const overrides = {
 	'Loader': {
@@ -9,7 +9,6 @@ const overrides = {
 };
 
 const Item = ({
-	loadImage,
 	columsCountProp,
 	rowsCountProp,
 	imagesAutoResizeProp,
@@ -31,13 +30,9 @@ const Item = ({
 	objectPositionFull,
 	loadingFull,
 	index,
+	loadImage,
 	addPictureParams,
-	isOpen,
 	setOpen,
-	setBigImage,
-	isBigImage,
-	setZoom,
-	offScrollProp,
 	galleryItemWidth,
 	ratioSizes,
 	setRatioSizes,
@@ -47,12 +42,9 @@ const Item = ({
 	imagesMinWidthProp,
 	imagesMaxWidthProp,
 	autoFillInProp,
-	loaderFormatProp,
-	previewLoaderStatusProp,
-	galleryItemCountProp,
 	columnsCountProp,
 	borderWidthProp,
-	getItemSize,
+	previewLoaderStatusProp,
 	defaultPreviewSrc,
 	defaultFullSrc,
 	...props
@@ -93,8 +85,7 @@ const Item = ({
 			'loading': loadingFull
 		});
 		setClicked(true);
-	}); // }, [isOpen, index, isBigImage, offScrollProp]); 
-
+	});
 	const changeFormat = useCallback((format, sizes) => {
 		const params = {
 			width: galleryItemWidth,

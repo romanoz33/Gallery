@@ -31,12 +31,13 @@ export default (() => {
 			<Box height="100px" />
 			<Components.Gallery
 				offScrollProp
-				autoFillInProp
+				autoFillInProp={false}
 				loaderFormatProp="По кнопке"
 				previewLoaderStatusProp={false}
 				ratioFormatsProp="1:1"
 				galleryItemCountProp="40"
 				columnsCountProp="2"
+				fullLoaderStatusProp={false}
 			>
 				<Override slot="Item 2" srcPreview="https://images.unsplash.com/photo-1611095564985-89765398121e?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000" srcFull="https://images.unsplash.com/photo-1613000308053-179042bbef9e?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" showImageProp={false} />
 				<Override slot="Lightbox" showImageProp={false} offLightboxProp={false}>
@@ -48,7 +49,6 @@ export default (() => {
 					imagesAutoResizeProp
 					loadingPreview="eager"
 					columsCountProp="1"
-					srcPreview="https://images.unsplash.com/photo-1611095973512-45224aae1990?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000"
 				/>
 				<Override
 					slot="Item 3"
