@@ -120,23 +120,21 @@ const Lightbox = ({
 		if (!isOpen) scroll.enable();
 	}, [isOpen]);
 	useEffect(() => {
-		// setSomePictureParams({});
 		if (clicked) {
 			setOpen(true);
 			loadImage(somePictureParams.src || defaultFullSrc).then(img => {
-				setBigImage(false);
+				setLoadingFullPic(false);
 				if (offScrollProp) scroll.disable();
 				if (img.width > window.innerWidth) setBigImage(true);
-				setLoadingFullPic(false);
 			});
 		}
-	}); // }, [isOpen, clicked]);   
-
+	}, [isOpen, clicked]);
 	const closeLightbox = useCallback(() => {
 		setLoadingFullPic(true);
 		setOpen(false);
 		setZoom(false);
 		setClicked(false);
+		setBigImage(false);
 		setSomePictureParams({});
 		if (offScrollProp) scroll.enable();
 	}, [offScrollProp, isOpen]);
