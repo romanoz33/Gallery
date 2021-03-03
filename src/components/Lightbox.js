@@ -123,6 +123,7 @@ const Lightbox = ({
 		if (clicked) {
 			setOpen(true);
 			loadImage(somePictureParams.src || defaultFullSrc).then(img => {
+				setBigImage(false);
 				setLoadingFullPic(false);
 				if (offScrollProp) scroll.disable();
 				if (img.width > window.innerWidth) setBigImage(true);
@@ -134,7 +135,6 @@ const Lightbox = ({
 		setOpen(false);
 		setZoom(false);
 		setClicked(false);
-		setBigImage(false);
 		setSomePictureParams({});
 		if (offScrollProp) scroll.enable();
 	}, [offScrollProp, isOpen]);
