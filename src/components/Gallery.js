@@ -4,6 +4,8 @@ import { Box, Button } from '@quarkly/widgets';
 import Item from './Item';
 import Lightbox from './Lightbox';
 const windowHeightSize = 1.5;
+const defaultPreviewSrc = 'https://media.istockphoto.com/vectors/image-preview-icon-picture-placeholder-for-website-or-uiux-design-vector-id1222357475?k=6&m=1222357475&s=170667a&w=0&h=sCVQ6Qaut-zK8EdXE4s70nmmXRQeK8FmooCqvE32spQ=';
+const defaultFullSrc = 'http://placehold.it/800';
 const overrides = {
 	'Wrapper': {
 		'kind': 'Box'
@@ -29,13 +31,13 @@ const overrides = {
 			'margin-top': '20px'
 		}
 	},
-	'Button More:on': {
+	'Button More :Visible': {
 		'kind': 'Button',
 		'props': {
 			'display': 'block'
 		}
 	},
-	'Button More:off': {
+	'Button More :Hidden': {
 		'kind': 'Button',
 		'props': {
 			'display': 'none'
@@ -52,22 +54,6 @@ const changeStrInNumber = str => {
 	}
 
 	return `${newStr}`;
-}; // Собираем и храним все пропсы по картинкам
-
-
-const picturesParams = [];
-
-const addPictureParams = (index, data) => {
-	picturesParams[index] = {
-		'src': data.srcFull,
-		'srcset': data.srcSetFull,
-		'sizes': data.sizesFull,
-		'alt': data.altFull,
-		'title': data.titleFull,
-		'objectFit': data.objectFitFull,
-		'objectPosition': data.objectPositionFull,
-		'loading': data.loadingFull
-	};
 };
 
 const getAPI = () => {
@@ -95,100 +81,162 @@ const Gallery = ({
 	imagesMinWidthProp,
 	borderWidthProp,
 	offScrollProp,
+	previewLoaderStatusProp,
+	fullLoaderStatusProp,
 	...props
 }) => {
 	const galleryRef = useRef();
+	const picturesParamsRef = useRef([]);
+	const lastRan = useRef(Date.now());
 	const [isOpen, setOpen] = useState(false);
 	const [isBigImage, setBigImage] = useState(false);
-	const [isZoom, setZoom] = useState(false); // const [offScrollProp, setScrollStatus] = useState(offScrollProp);
-	// Храним Размеры выбранного соотношения сторон
+	const [isZoom, setZoom] = useState(false); // Храним Размеры превьюшек для выбранного соотношения сторон
 
-	const [ratioSizes, setRatioSizes] = useState({}); // Храним индекс нажатой картинки 
+	const [ratioSizes, setRatioSizes] = useState({}); // Статус кнопки дозагрузки
 
-	const [selectdIndex, setIndex] = useState(0); // Статус кнопки дозагрузки
+	const [isButtonVisible, setButtonVisible] = useState(loaderFormatProp === 'По кнопке'); // Кол-во изображений, которые нужно загружать
 
-	const [isButton, setButton] = useState(); // Кол-во изображений, которые нужно загружать
+	const [itemsLoadingCount, setItemsLoadingCount] = useState(); // Загружена ли полная картинка
 
-	const [itemsLoadingCount, setItemsLoadingCount] = useState(); // Условие, чтобы количество Item было не меньше 0.
+	const [isLoadingFullPic, setLoadingFullPic] = useState(true); // Все параметры определенной картинки
+
+	const [somePictureParams, setSomePictureParams] = useState({}); // Размеры галереи
+
+	const [galleryItemWidth, setGalleryItemWidth] = useState();
+	picturesParamsRef.current = [];
+
+	const addPictureParams = (index, data) => {
+		picturesParamsRef.current[index] = {
+			'src': data.srcFull,
+			'srcset': data.srcSetFull,
+			'sizes': data.sizesFull,
+			'alt': data.altFull,
+			'title': data.titleFull,
+			'objectFit': data.objectFitFull,
+			'objectPosition': data.objectPositionFull,
+			'loading': data.loadingFull
+		};
+	}; // Функция throttled эффекта
+
+
+	const throttledEffect = (callback, delay, deps = []) => {
+		lastRan.current = Date.now();
+		const handler = setTimeout(function () {
+			if (Date.now() - lastRan.current >= delay) {
+				callback();
+				lastRan.current = Date.now();
+			}
+		}, delay - (Date.now() - lastRan.current));
+		return () => {
+			clearTimeout(handler);
+		};
+	}; // Получаем ширину ячейки 
+
+
+	const getItemSize = galleryWidth => {
+		return (galleryWidth - (columnsCountProp - 1) * borderWidthProp) / columnsCountProp;
+	}; // Функция вызова при изменении размера Галереи целиком
+
+
+	const handleResize = el => {
+		throttledEffect(() => {
+			const galleryWidth = el[0].contentRect.width;
+			const imageWidth = getItemSize(galleryWidth);
+			setGalleryItemWidth(imageWidth);
+		}, 500, []);
+	};
+
+	useEffect(() => {
+		const resizer = new ResizeObserver(handleResize);
+		resizer.observe(galleryRef.current);
+		return () => {
+			resizer.unobserve(galleryRef.current);
+		};
+	}, [galleryRef.current]);
+	const galleryItemCountNumb = useMemo(() => {
+		return parseInt(galleryItemCountProp);
+	}, [galleryItemCountProp]); // Условие, чтобы количество Item было не меньше 0.
 	// Иначе получаем ошибку при переборе массива
 
 	useEffect(() => {
 		if (galleryItemCountProp > 0) {
-			galleryItemCountProp = parseInt(galleryItemCountProp);
+			galleryItemCountProp = galleryItemCountNumb;
 		} else {
 			galleryItemCountProp = 0;
 		}
-	}, [galleryItemCountProp]); // Получаем ширину ячейки 
+	}, [galleryItemCountProp]); // Получаем количество картинок, котороые помещаются в видимую область
 
-	const getItemSize = useCallback(() => {
-		return window.innerWidth / columnsCountProp - (columnsCountProp - 1) * borderWidthProp;
-	}, [borderWidthProp, columnsCountProp]); // Получаем количество картинок, котороые помещаются в видимую область
-
-	const getItemCountOnView = useCallback(() => {
+	const getItemCountOnView = useCallback(galleryWidth => {
 		// Высота 1.5 окна
 		const visibleSpace = window.innerHeight * windowHeightSize; // Кол-во рядов. Округляем в большую сторону 
 
-		const visibleRows = Math.ceil(visibleSpace / getItemSize()); // Возвращаем кол-во изображений
+		const visibleRows = Math.ceil(visibleSpace / getItemSize(galleryWidth)); // Возвращаем кол-во изображений
 
 		const items = visibleRows * columnsCountProp;
-		if (items > galleryItemCountProp) return parseInt(galleryItemCountProp);
+
+		if (items > galleryItemCountNumb) {
+			return galleryItemCountNumb;
+		}
+
 		return items;
-	}, [galleryItemCountProp, columnsCountProp, borderWidthProp, loaderFormatProp, ratioFormatsProp, autoFillInProp, imagesMaxWidthProp, imagesMinWidthProp]); // Функция дозагрузки по клику
+	}, [galleryItemCountProp, columnsCountProp, borderWidthProp, loaderFormatProp, ratioFormatsProp, autoFillInProp, imagesMaxWidthProp, imagesMinWidthProp]); // Функция дозагрузки по клику  
 
 	const loadMore = useCallback(() => {
-		const items = getItemCountOnView();
-		const newItems = picturesParams.length + items;
+		const items = getItemCountOnView(galleryRef.current.getBoundingClientRect().width);
+		const newItems = picturesParamsRef.current.length + items;
 
 		if (newItems < galleryItemCountProp) {
 			setItemsLoadingCount(newItems);
 		} else {
-			setItemsLoadingCount(parseInt(galleryItemCountProp));
-			setButton(false);
+			setItemsLoadingCount(galleryItemCountNumb);
+			setButtonVisible(false);
 		}
-	}, [picturesParams.length, galleryItemCountProp]);
+	}, [picturesParamsRef.current.length, galleryItemCountProp]);
 
-	const loadingOnScroll = () => {
+	const loadOnScroll = () => {
 		const gallerySizes = galleryRef.current.getBoundingClientRect();
+		const items = getItemCountOnView(gallerySizes.width);
+		const newItems = picturesParamsRef.current.length + items;
 
 		if (gallerySizes.bottom - window.innerHeight / 2 < window.innerHeight) {
 			loadMore();
+
+			if (newItems > galleryItemCountNumb) {
+				window.removeEventListener('scroll', loadOnScroll);
+				window.removeEventListener('resize', loadOnScroll);
+				window.removeEventListener('orientationchange', loadOnScroll);
+			}
 		}
 	};
 
 	useEffect(() => {
-		const items = getItemCountOnView();
+		const gallerySizes = galleryRef.current.getBoundingClientRect();
+		const items = getItemCountOnView(gallerySizes.width);
 		const {
-			mode,
-			projectType
+			mode
 		} = getAPI();
 
 		if (mode === 'development') {
 			if (loaderFormatProp === 'Все сразу' || loaderFormatProp === 'При скроле') {
-				setItemsLoadingCount(galleryItemCountProp);
+				setItemsLoadingCount(galleryItemCountNumb);
+				setButtonVisible(false);
 			} else if (loaderFormatProp === 'По кнопке') {
 				setItemsLoadingCount(items);
-
-				if (items == galleryItemCountProp) {
-					setButton(false);
-				} else {
-					setButton(true);
-				}
+				setButtonVisible(items !== galleryItemCountNumb);
 			}
 		} else if (mode === 'production') {
-			if (loaderFormatProp === 'Все сразу') setItemsLoadingCount(galleryItemCountProp);
-
-			if (loaderFormatProp === 'При скроле') {
-				window.addEventListener('scroll', loadingOnScroll);
-				window.addEventListener('resize', loadingOnScroll);
-				window.addEventListener('orientationchange', loadingOnScroll);
+			if (loaderFormatProp === 'Все сразу') {
+				setItemsLoadingCount(galleryItemCountNumb);
+				setButtonVisible(false);
+			} else if (loaderFormatProp === 'При скроле') {
+				window.addEventListener('scroll', loadOnScroll);
+				window.addEventListener('resize', loadOnScroll);
+				window.addEventListener('orientationchange', loadOnScroll);
+				setButtonVisible(false);
 				setItemsLoadingCount(items);
-			}
-
-			;
-
-			if (loaderFormatProp === 'По кнопке') {
+			} else if (loaderFormatProp === 'По кнопке') {
 				setItemsLoadingCount(items);
-				if (items == galleryItemCountProp) setButton(false);
+				setButtonVisible(items !== galleryItemCountNumb);
 			}
 
 			;
@@ -196,9 +244,9 @@ const Gallery = ({
 
 		;
 		return function () {
-			window.removeEventListener('scroll', loadingOnScroll);
-			window.removeEventListener('resize', loadingOnScroll);
-			window.removeEventListener('orientationchange', loadingOnScroll);
+			window.removeEventListener('scroll', loadOnScroll);
+			window.removeEventListener('resize', loadOnScroll);
+			window.removeEventListener('orientationchange', loadOnScroll);
 		};
 	}, [galleryItemCountProp, columnsCountProp, borderWidthProp, loaderFormatProp, ratioFormatsProp, autoFillInProp, imagesMaxWidthProp, imagesMinWidthProp]);
 	const {
@@ -207,25 +255,30 @@ const Gallery = ({
 	} = useOverrides(props, overrides);
 	const items = Array(itemsLoadingCount).fill().map((item, index) => <Item
 		{...override(`Item`, `Item ${index}`)}
+		key={`${rest['data-qid']}-item-${index}`}
 		index={index}
 		addPictureParams={addPictureParams}
 		isOpen={isOpen}
 		setOpen={setOpen}
-		setIndex={setIndex}
 		setBigImage={setBigImage}
 		offScrollProp={offScrollProp}
 		setZoom={setZoom}
+		galleryItemWidth={galleryItemWidth}
 		ratioSizes={ratioSizes}
 		setRatioSizes={setRatioSizes}
+		setLoadingFullPic={setLoadingFullPic}
+		setSomePictureParams={setSomePictureParams}
 		ratioFormatsProp={ratioFormatsProp}
 		imagesMinWidthProp={imagesMinWidthProp}
 		imagesMaxWidthProp={imagesMaxWidthProp}
 		autoFillInProp={autoFillInProp}
 		columnsCountProp={columnsCountProp}
 		borderWidthProp={borderWidthProp}
+		previewLoaderStatusProp={previewLoaderStatusProp}
+		defaultPreviewSrc={defaultPreviewSrc}
+		defaultFullSrc={defaultFullSrc}
 	/>);
 	return <Box {...rest}>
-		      
 		<Box
 			ref={galleryRef}
 			display='grid'
@@ -250,32 +303,27 @@ const Gallery = ({
 			// }
 
 		>
-			        
 			{items}
-			 
-      
 		</Box>
-		  
-        
-		<Button onClick={e => loadMore(e)} {...override(`Button More`, `Button More${isButton ? ':on' : ':off'}`)}>
-			          Загрузить еще
+		<Button onClick={loadMore} {...override(`Button More`, `Button More ${isButtonVisible ? ':Visible' : ':Hidden'}`)}>
+			 
+				Загрузить еще 
         
 		</Button>
-		       
 		<Lightbox
 			{...override(`Lightbox`)}
-			picturesParams={picturesParams}
-			selectdIndex={selectdIndex}
-			setIndex={setIndex}
+			somePictureParams={somePictureParams}
 			isOpen={isOpen}
 			setOpen={setOpen}
 			isBigImage={isBigImage}
 			isZoom={isZoom}
 			setZoom={setZoom}
 			offScrollProp={offScrollProp}
+			isLoadingFullPic={isLoadingFullPic}
+			defaultFullSrc={defaultFullSrc}
+			fullLoaderStatusProp={fullLoaderStatusProp}
 		/>
-		  
-    
+		 
 	</Box>;
 };
 
@@ -298,24 +346,24 @@ const propInfo = {
 		category: 'Gallery',
 		weight: 1
 	},
-	lgColumnsCountProp: {
-		title: 'lg',
-		control: 'input',
-		category: 'Gallery',
-		weight: .3
-	},
-	mdColumnsCountProp: {
-		title: 'md',
-		control: 'input',
-		category: 'Gallery',
-		weight: .3
-	},
-	smColumnsCountProp: {
-		title: 'sm',
-		control: 'input',
-		category: 'Gallery',
-		weight: .3
-	},
+	// lgColumnsCountProp: {
+	// 	title: 'lg',
+	// 	control: 'input',
+	// 	category: 'Gallery',
+	// 	weight: .3
+	// },
+	// mdColumnsCountProp: {
+	// 	title: 'md',
+	// 	control: 'input',
+	// 	category: 'Gallery',
+	// 	weight: .3
+	// },
+	// smColumnsCountProp: {
+	// 	title: 'sm',
+	// 	control: 'input',
+	// 	category: 'Gallery',
+	// 	weight: .3
+	// },
 	borderWidthProp: {
 		title: 'Ширина отступов',
 		description: {
@@ -372,10 +420,28 @@ const propInfo = {
 		category: 'images',
 		weight: 1
 	},
+	previewLoaderStatusProp: {
+		title: 'Отключить лоадер для превью',
+		description: {
+			en: 'Отключить лоадер для превью изображений'
+		},
+		control: 'checkbox',
+		category: 'images',
+		weight: 1
+	},
 	offScrollProp: {
 		title: 'Отключить скролл',
 		description: {
 			ru: 'Отключить скролл при показе полного изображения'
+		},
+		control: 'checkbox',
+		category: 'Lightbox',
+		weight: 1
+	},
+	fullLoaderStatusProp: {
+		title: 'Отключить лоадер для полной картинки',
+		description: {
+			en: 'Отключить лоадер для полной картинки'
 		},
 		control: 'checkbox',
 		category: 'Lightbox',
@@ -392,6 +458,8 @@ const defaultProps = {
 	loaderFormatProp: 'Все сразу',
 	autoFillInProp: true,
 	imagesAutoResizeProp: false,
+	previewLoaderStatusProp: false,
+	fullLoaderStatusProp: false,
 	imagesMinWidthProp: '80',
 	imagesMaxWidthProp: '1fr',
 	borderWidthProp: '10',

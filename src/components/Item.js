@@ -1,33 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useOverrides } from '@quarkly/components';
-import { Box, Image } from '@quarkly/widgets';
+import { Box, Image, Icon } from '@quarkly/widgets';
 import scroll from './Scrollblock';
 import Loader from './Loader';
-import { AiOutlineLoading } from "react-icons/ai";
 const overrides = {
 	'Loader': {
-		'kind': 'Icon',
-		'props': {
-			'position': 'absolute',
-			'top': 'calc(50% - 15px)',
-			'left': 'calc(50% - 15px)',
-			'z-index': '125',
-			'category': 'ai',
-			'icon': AiOutlineLoading,
-			'size': '30px'
-		}
-	},
-	'Loader:on': {
-		'kind': 'Icon',
-		'props': {
-			'display': 'block'
-		}
-	},
-	'Loader:off': {
-		'kind': 'Icon',
-		'props': {
-			'display': 'none'
-		}
+		'kind': 'Icon'
 	}
 };
 
@@ -62,27 +40,35 @@ const Item = ({
 	addPictureParams,
 	isOpen,
 	setOpen,
-	setIndex,
 	setBigImage,
-	offScrollProp,
+	isBigImage,
 	setZoom,
+	offScrollProp,
+	galleryItemWidth,
 	ratioSizes,
 	setRatioSizes,
+	setLoadingFullPic,
+	setSomePictureParams,
 	ratioFormatsProp,
 	imagesMinWidthProp,
 	imagesMaxWidthProp,
 	autoFillInProp,
+	loaderFormatProp,
+	previewLoaderStatusProp,
+	galleryItemCountProp,
 	columnsCountProp,
 	borderWidthProp,
+	getItemSize,
+	defaultPreviewSrc,
+	defaultFullSrc,
 	...props
 }) => {
 	const {
 		override,
 		rest
 	} = useOverrides(props, overrides);
-	const [isLoading, setLoading] = useState(false);
-	const boxRef = useRef(); // Функция для записи всех данных картинок в объект
-
+	const [isLoading, setLoading] = useState(true);
+	const boxRef = useRef();
 	addPictureParams(index, {
 		srcFull,
 		srcSetFull,
@@ -94,20 +80,30 @@ const Item = ({
 		loadingFull
 	});
 	useEffect(() => {
-		if (!isOpen) scroll.enable();
-	}, [isOpen]);
+		setOpen(showImageProp);
+	}, [showImageProp]);
 	useEffect(() => {
-		loadImage(srcPreview).then(img => {
-			setLoading(true);
+		loadImage(srcPreview || defaultPreviewSrc).then(img => {
+			setLoading(false);
 		});
 	}, []);
-	const openGalleryItem = useCallback(e => {
-		loadImage(srcFull).then(img => {
-			setIndex(index);
+	const openGalleryItem = useCallback(() => {
+		loadImage(srcFull || defaultFullSrc).then(img => {
 			setBigImage(false);
 			setOpen(true);
 			if (offScrollProp) scroll.disable();
 			if (img.width > window.innerWidth) setBigImage(true);
+			setLoadingFullPic(false);
+			setSomePictureParams({
+				'src': srcFull,
+				'srcset': srcSetFull,
+				'sizes': sizesFull,
+				'alt': altFull,
+				'title': titleFull,
+				'object-position': objectFitFull,
+				'object-fit': objectPositionFull,
+				'loading': loadingFull
+			});
 		});
 		window.addEventListener('keydown', e => {
 			if (e.keyCode === 27) {
@@ -116,10 +112,10 @@ const Item = ({
 				if (offScrollProp) scroll.enable();
 			}
 		});
-	}, [isOpen, offScrollProp]);
+	}, [isOpen, index, isBigImage, offScrollProp]);
 	const changeFormat = useCallback((format, sizes) => {
 		const params = {
-			width: sizes.width,
+			width: galleryItemWidth,
 			height: sizes.height
 		};
 
@@ -158,11 +154,11 @@ const Item = ({
 		}
 
 		setRatioSizes(params);
-	}, [ratioFormatsProp, columnsCountProp, borderWidthProp, imagesMinWidthProp, imagesMaxWidthProp, autoFillInProp]);
+	}, [ratioFormatsProp, columnsCountProp, borderWidthProp, imagesMinWidthProp, imagesMaxWidthProp, autoFillInProp, galleryItemWidth]);
 	useEffect(() => {
 		const sizes = boxRef.current.getBoundingClientRect();
 		changeFormat(ratioFormatsProp, sizes);
-	}, [ratioFormatsProp, columnsCountProp, borderWidthProp, imagesMinWidthProp, imagesMaxWidthProp, autoFillInProp]);
+	}, [ratioFormatsProp, columnsCountProp, borderWidthProp, imagesMinWidthProp, imagesMaxWidthProp, autoFillInProp, galleryItemWidth]);
 	return <Box
 		ref={boxRef}
 		{...rest}
@@ -175,7 +171,7 @@ const Item = ({
 	>
 		 
 		<Image
-			onClick={e => openGalleryItem(e)}
+			onClick={openGalleryItem}
 			max-width='100%'
 			max-height='100%'
 			min-width={imagesAutoResizeProp ? '100%' : 'auto'}
@@ -186,13 +182,13 @@ const Item = ({
 			title={titlePreview}
 			object-position={objectPositionPreview}
 			alt={altPreview}
-			src={isLoading ? srcPreview || srcSetPreview : ''}
-			opacity={isLoading ? '1' : '0'}
+			loading={loadingPreview}
+			opacity={isLoading ? '0' : '1'}
+			src={isLoading ? '' : srcPreview || defaultPreviewSrc}
 			{...ratioSizes}
 		/>
-		 
-			 
-		<Loader {...override('Loader', `Loader:${isLoading ? 'off' : 'on'}`)} />
+		  
+		{previewLoaderStatusProp ? '' : <Loader {...override('Loader')} isLoading={isLoading} />}
 	</Box>;
 };
 
@@ -414,12 +410,14 @@ const defaultProps = {
 	columsCountProp: 1,
 	rowsCountProp: 1,
 	imagesAutoResizeProp: true,
-	showImageProp: false,
-	srcPreview: 'https://media.istockphoto.com/vectors/image-preview-icon-picture-placeholder-for-website-or-uiux-design-vector-id1222357475?k=6&m=1222357475&s=170667a&w=0&h=sCVQ6Qaut-zK8EdXE4s70nmmXRQeK8FmooCqvE32spQ='
+	showImageProp: false
 };
 Object.assign(Item, {
 	overrides,
 	propInfo,
-	defaultProps
+	defaultProps,
+	effects: {
+		hover: ":hover"
+	}
 });
 export default Item;

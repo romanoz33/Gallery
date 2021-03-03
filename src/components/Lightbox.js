@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { useOverrides } from '@quarkly/components';
 import { Box, Icon, Image } from '@quarkly/widgets';
 import scroll from './Scrollblock';
+import Loader from './Loader';
 import { IoMdClose } from "react-icons/io";
 const overrides = {
 	'Overlay': {
@@ -54,6 +55,9 @@ const overrides = {
 			'category': 'io',
 			'icon': IoMdClose
 		}
+	},
+	'Loader': {
+		'kind': 'Icon'
 	}
 };
 const imageIsZoomIn = {
@@ -91,19 +95,21 @@ const stopEventClick = e => {
 };
 
 const Lightbox = ({
-	picturesParams,
+	somePictureParams,
 	isOpen,
 	setOpen,
-	selectdIndex,
-	setIndex,
 	isBigImage,
 	isZoom,
 	setZoom,
 	offScrollProp,
+	isLoadingFullPic,
+	defaultFullSrc,
+	fullLoaderStatusProp,
 	...props
 }) => {
-	useEffect(() => {// В случае, когда отключаем Lighbox с помощью пропса, убираем блокировку скрола
-		// if (!isOpen) scroll.enable();
+	useEffect(() => {
+		// В случае, когда отключаем Lighbox с помощью пропса, убираем блокировку скрола
+		if (!isOpen) scroll.enable();
 	}, [isOpen]);
 	const closeLightbox = useCallback(() => {
 		setOpen(false);
@@ -119,6 +125,7 @@ const Lightbox = ({
 		rest
 	} = useOverrides(props, overrides);
 	return <Box {...rest}>
+		 
 		<Box onClick={closeLightbox} {...override('Overlay', `Overlay ${isOpen ? ':open' : ':close'}`)}>
 			<Icon onClick={closeLightbox} {...override('Close')} />
 			<Image
@@ -127,12 +134,21 @@ const Lightbox = ({
 				max-height='80%'
 				min-height='0'
 				min-weight='0'
-				onClick={e => zoomImage(e)}
+				onClick={zoomImage}
 				{...isZoom ? isBigImage && imageIsZoomIn : isBigImage && imageIsZoomOut}
 				{...isOpen ? imageIsOpen : imageIsClose}
-				src={picturesParams[selectdIndex].src || 'http://placehold.it/800'}
+				src={isLoadingFullPic ? '' : somePictureParams.src || defaultFullSrc}
+				title={somePictureParams['title']}
+				alt={somePictureParams['alt']}
+				srcset={somePictureParams['srcset']}
+				sizes={somePictureParams['sizes']}
+				object-fit={somePictureParams['object-fit']}
+				object-position={somePictureParams['object-position']}
+				loading={somePictureParams['loading']}
 				{...override('Image')}
 			/>
+			 
+			{fullLoaderStatusProp ? '' : <Loader {...override('Loader')} isLoading={isLoadingFullPic} />}
 		</Box>
 		  
 	</Box>;
