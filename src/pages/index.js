@@ -33,7 +33,7 @@ export default (() => {
 				offScrollProp={false}
 				autoFillInProp
 				loaderFormatProp="При скроле"
-				previewLoaderStatusProp
+				previewLoaderStatusProp={false}
 				ratioFormatsProp="1:1"
 				galleryItemCountProp="20"
 				columnsCountProp="2"
