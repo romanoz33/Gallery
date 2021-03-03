@@ -88,6 +88,7 @@ const Item = ({
 		});
 	}, []);
 	const openGalleryItem = useCallback(() => {
+		setSomePictureParams({});
 		loadImage(srcFull || defaultFullSrc).then(img => {
 			setBigImage(false);
 			setOpen(true);
@@ -95,7 +96,7 @@ const Item = ({
 			if (img.width > window.innerWidth) setBigImage(true);
 			setLoadingFullPic(false);
 			setSomePictureParams({
-				'src': srcFull,
+				'src': srcFull || defaultFullSrc,
 				'srcset': srcSetFull,
 				'sizes': sizesFull,
 				'alt': altFull,

@@ -26,7 +26,7 @@ const overrides = {
 			'z-index': 110,
 			'visibility': 'visible',
 			'transition-property': 'opacity, visibility, z-index',
-			'transition-duration': '.7s'
+			'transition-duration': '.3s'
 		}
 	},
 	'Overlay :close': {
@@ -36,7 +36,7 @@ const overrides = {
 			'z-index': -1,
 			'visibility': 'hidden',
 			'transition-property': 'opacity, visibility, z-index',
-			'transition-duration': '.7s'
+			'transition-duration': '.3s'
 		}
 	},
 	'Image': {
@@ -76,7 +76,7 @@ const imageIsOpen = {
 	'visibility': 'visible',
 	'transform': 'scale(1)',
 	'transition-property': 'opacity, visibility, z-index, transform, max-height, max-width',
-	'transition-duration': '.7s',
+	'transition-duration': '.3s',
 	'transition-timing-function': 'ease-in-out'
 };
 const imageIsClose = {
@@ -85,7 +85,7 @@ const imageIsClose = {
 	'visibility': 'hidden',
 	'transform': 'scale(.9)',
 	'transition-property': 'opacity, visibility, z-index, transform, max-height, max-width',
-	'transition-duration': '.7s',
+	'transition-duration': '.3s',
 	'transition-timing-function': 'ease-in-out'
 }; // Остановка слушателя для дочерих элементов
 

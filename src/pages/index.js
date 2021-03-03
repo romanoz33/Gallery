@@ -25,24 +25,31 @@ export default (() => {
 				margin="20px 0 0 0"
 				text-align="center"
 			>
-				{" \n\t\t"}About Us
+				{" \n\t\t \n\t\t"}About Us
 			</Text>
 			{" \n\t \n\t "}
 			<Box height="100px" />
 			<Components.Gallery
-				offScrollProp
+				offScrollProp={false}
 				autoFillInProp
-				loaderFormatProp="По кнопке"
-				columnsCountProp="3"
-				galleryItemCountProp="40"
+				loaderFormatProp="При скроле"
 				previewLoaderStatusProp
 				ratioFormatsProp="1:1"
+				galleryItemCountProp="20"
+				columnsCountProp="2"
 			>
 				<Override slot="Item 2" srcPreview="https://images.unsplash.com/photo-1611095564985-89765398121e?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000" srcFull="https://images.unsplash.com/photo-1613000308053-179042bbef9e?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" showImageProp={false} />
 				<Override slot="Lightbox" showImageProp={false} offLightboxProp={false}>
 					<Override slot="Icon prev" category="fa" />
 				</Override>
-				<Override slot="Item" showImageProp={false} imagesAutoResizeProp loadingPreview="eager" />
+				<Override
+					slot="Item"
+					showImageProp={false}
+					imagesAutoResizeProp
+					loadingPreview="eager"
+					columsCountProp="1"
+					srcPreview="https://images.unsplash.com/photo-1611095973512-45224aae1990?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000"
+				/>
 				<Override
 					slot="Item 3"
 					srcPreview="https://images.unsplash.com/photo-1613077655246-c8c1ab3820d7?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000"
@@ -52,11 +59,10 @@ export default (() => {
 					altFull="alt"
 				/>
 				<Override slot="Item 0" srcFull="https://images.unsplash.com/photo-1614595145313-c7e1765be457?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" srcPreview="https://images.unsplash.com/photo-1613053341085-db794820ce43?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" titlePreview="Test" />
-				<Override slot="Item 1" srcPreview="https://images.unsplash.com/photo-1611095780122-d692cee29291?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000" />
+				<Override slot="Item 1" srcPreview="https://images.unsplash.com/photo-1611095780122-d692cee29291?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000" showImageProp />
 				<Override slot="Item 4" srcPreview="https://images.unsplash.com/photo-1593642532744-d377ab507dc8?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000" />
 				<Override slot="Item 5" srcPreview="https://images.unsplash.com/photo-1612831200752-a70d1d1bb83b?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000" />
 				<Override slot="Item 6" srcPreview="https://images.unsplash.com/photo-1613002143253-8587d9ad2004?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000" />
-				<Override slot="Item 7" />
 				<Override slot="Item 8" srcPreview="https://images.unsplash.com/photo-1593642532871-8b12e02d091c?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000" />
 				<Override slot="Item 9" srcPreview="https://images.unsplash.com/photo-1613066803104-00fab99c0d5a?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" />
 				<Override slot="Item 10" srcPreview="https://images.unsplash.com/photo-1613048286755-37d7800b04ea?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" />
@@ -65,6 +71,7 @@ export default (() => {
 				<Override slot="Item 13" srcPreview="https://images.unsplash.com/photo-1612923032660-5c872a1dd5f6?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000" />
 				<Override slot="Item 14" srcPreview="https://images.unsplash.com/photo-1612831200091-c08595b18e6b?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&w=2000" />
 				<Override slot="Item 15" srcPreview="https://images.unsplash.com/photo-1613113459353-f1bc3bf6b29f?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" />
+				<Override slot="Item 19" srcPreview="https://images.unsplash.com/photo-1614704531103-3ef4f46f27e7?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&h=2000" />
 			</Components.Gallery>
 		</Section>
 		<Section padding="140px 0" sm-padding="40px 0" background="url(https://images.unsplash.com/photo-1515600051222-a3c338ff16f6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80) center/cover">
