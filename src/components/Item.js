@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useOverrides } from '@quarkly/components';
 import { Box, Image, Icon } from '@quarkly/widgets';
-import scroll from './Scrollblock';
 import Loader from './Loader';
 const overrides = {
 	'Loader': {
@@ -93,13 +92,7 @@ const Item = ({
 			'object-fit': objectPositionFull,
 			'loading': loadingFull
 		});
-		setClicked(true); // window.addEventListener('keydown', (e) => {
-		// 	if (e.keyCode === 27) { 
-		// 		setOpen(false);  
-		// 		setZoom(false);
-		// 		if (offScrollProp) scroll.enable();
-		// 	} 
-		// });	 
+		setClicked(true);
 	}); // }, [isOpen, index, isBigImage, offScrollProp]); 
 
 	const changeFormat = useCallback((format, sizes) => {

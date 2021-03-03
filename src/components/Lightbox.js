@@ -105,8 +105,6 @@ const Lightbox = ({
 	isZoom,
 	setZoom,
 	offScrollProp,
-	// isLoadingFullPic, 
-	// setLoadingFullPic,
 	defaultFullSrc,
 	fullLoaderStatusProp,
 	clicked,
@@ -119,16 +117,6 @@ const Lightbox = ({
 		// В случае, когда отключаем Lighbox с помощью пропса, убираем блокировку скрола
 		if (!isOpen) scroll.enable();
 	}, [isOpen]);
-	useEffect(() => {
-		if (clicked) {
-			setOpen(true);
-			loadImage(somePictureParams.src || defaultFullSrc).then(img => {
-				setLoadingFullPic(false);
-				if (offScrollProp) scroll.disable();
-				if (img.width > window.innerWidth) setBigImage(true);
-			});
-		}
-	}, [isOpen, clicked]);
 	const closeLightbox = useCallback(() => {
 		setLoadingFullPic(true);
 		setOpen(false);
@@ -138,6 +126,27 @@ const Lightbox = ({
 		setSomePictureParams({});
 		if (offScrollProp) scroll.enable();
 	}, [offScrollProp, isOpen]);
+
+	const closeOnEsc = e => {
+		if (e.keyCode === 27) {
+			closeLightbox();
+		}
+
+		;
+	};
+
+	useEffect(() => {
+		if (clicked) {
+			setOpen(true);
+			loadImage(somePictureParams.src || defaultFullSrc).then(img => {
+				setLoadingFullPic(false);
+				if (offScrollProp) scroll.disable();
+				if (img.width > window.innerWidth) setBigImage(true);
+			});
+			window.addEventListener('keydown', closeOnEsc);
+			return () => window.removeEventListener('keydown', closeOnEsc);
+		}
+	}, [clicked]);
 	const zoomImage = useCallback(e => {
 		stopEventClick(e);
 		setZoom(!isZoom);

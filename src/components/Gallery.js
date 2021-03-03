@@ -95,6 +95,8 @@ const Gallery = ({
 	const galleryRef = useRef();
 	const picturesParamsRef = useRef([]);
 	const lastRan = useRef(Date.now());
+	const scrollLoadCountRef = useRef(1);
+	const clickLoadCountRef = useRef(1);
 	const [isOpen, setOpen] = useState(false);
 	const [isBigImage, setBigImage] = useState(false);
 	const [isZoom, setZoom] = useState(false); // Храним Размеры превьюшек для выбранного соотношения сторон
@@ -186,36 +188,50 @@ const Gallery = ({
 		}
 
 		return items;
-	}, [galleryItemCountProp, columnsCountProp, borderWidthProp, loaderFormatProp, ratioFormatsProp, autoFillInProp, imagesMaxWidthProp, imagesMinWidthProp]);
-	let fff = 1; // Функция дозагрузки по клику  
+	}, [galleryItemCountProp, columnsCountProp, borderWidthProp, loaderFormatProp, ratioFormatsProp, autoFillInProp, imagesMaxWidthProp, imagesMinWidthProp]); // Функция дозагрузки по клику или скролу
 
-	const loadMore = useCallback(() => {
-		const items = getItemCountOnView(galleryRef.current.getBoundingClientRect().width); // const newItems = picturesParamsRef.current.length + items;
-
-		const newItems = items + items * fff;
-		console.log(newItems); // const newItems = picturesParamsRef.current.length + items;
+	const loadMore = useCallback(type => {
+		const gallerySizes = galleryRef.current.getBoundingClientRect();
+		const items = getItemCountOnView(gallerySizes.width);
+		let newItems = '';
+		if (type === 'scroll') newItems = items + items * scrollLoadCountRef.current;
+		if (type === 'click') newItems = items + items * clickLoadCountRef.current;
 
 		if (newItems < galleryItemCountProp) {
 			setItemsLoadingCount(newItems);
-			fff = fff + 1;
+			if (type === 'scroll') scrollLoadCountRef.current = scrollLoadCountRef.current + 1;
+			if (type === 'click') clickLoadCountRef.current = clickLoadCountRef.current + 1;
 		} else {
 			setItemsLoadingCount(galleryItemCountNumb);
 			setButtonVisible(false);
 		}
-	}, [picturesParamsRef.current.length, galleryItemCountProp]);
+	}, [galleryItemCountProp]);
+
+	const loadOnClick = () => {
+		const gallerySizes = galleryRef.current.getBoundingClientRect();
+		const items = getItemCountOnView(gallerySizes.width);
+		const newItems = items + items * clickLoadCountRef.current;
+
+		if (gallerySizes.bottom - window.innerHeight / 2 < window.innerHeight) {
+			loadMore('click');
+			console.log('click');
+		}
+	};
 
 	const loadOnScroll = () => {
 		const gallerySizes = galleryRef.current.getBoundingClientRect();
 		const items = getItemCountOnView(gallerySizes.width);
-		const newItems = picturesParamsRef.current.length + items; // console.log(gallerySizes.bottom - (window.innerHeight / 2) < window.innerHeight) 
+		const newItems = items + items * scrollLoadCountRef.current;
 
 		if (gallerySizes.bottom - window.innerHeight / 2 < window.innerHeight) {
-			loadMore(); // console.log(newItems, galleryItemCountNumb) 
-			// if(newItems > galleryItemCountNumb) { 
-			// 	window.removeEventListener('scroll', loadOnScroll);
-			// 	window.removeEventListener('resize', loadOnScroll);
-			// 	window.removeEventListener('orientationchange', loadOnScroll);
-			// }     
+			loadMore('scroll');
+			console.log('scroll');
+
+			if (newItems > galleryItemCountNumb) {
+				window.removeEventListener('scroll', loadOnScroll);
+				window.removeEventListener('resize', loadOnScroll);
+				window.removeEventListener('orientationchange', loadOnScroll);
+			}
 		}
 	};
 
@@ -240,7 +256,6 @@ const Gallery = ({
 			setItemsLoadingCount(galleryItemCountNumb);
 			setButtonVisible(false);
 		} else if (loaderFormatProp === 'При скроле') {
-			loadOnScroll();
 			window.addEventListener('scroll', loadOnScroll);
 			window.addEventListener('resize', loadOnScroll);
 			window.addEventListener('orientationchange', loadOnScroll);
@@ -253,7 +268,7 @@ const Gallery = ({
 
 		; // };
 
-		return function () {
+		return () => {
 			window.removeEventListener('scroll', loadOnScroll);
 			window.removeEventListener('resize', loadOnScroll);
 			window.removeEventListener('orientationchange', loadOnScroll);
@@ -316,7 +331,7 @@ const Gallery = ({
 		>
 			{items}
 		</Box>
-		<Button onClick={loadMore} {...override(`Button More`, `Button More ${isButtonVisible ? ':Visible' : ':Hidden'}`)}>
+		<Button onClick={loadOnClick} {...override(`Button More`, `Button More ${isButtonVisible ? ':Visible' : ':Hidden'}`)}>
 			 
 				Загрузить еще 
         
